@@ -21,8 +21,6 @@ public class ImportantContacts extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-               // Intent intent=new Intent(context,MapsActivity.class);
-                //startActivity(intent);
                 //TODO: Create map intent to display address
 
             }
