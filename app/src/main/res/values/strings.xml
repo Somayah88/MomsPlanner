@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">MomsPlanner</string>
+    <string name="action_sign_out">Sign Out</string>
+    <string name="title_activity_maps">Map</string>
+
+
+    <string name="contact_title_default">Title</string>
+    <string name="address_default">Address is Not Available</string>
+    <string name="email_default">Email is Not Available</string>
+    <string name="phone_default">Phone Number is Not Available</string>
+
+
+    <string name="family_members_button">Family Members</string>
+    <string name="to_do_button">To-Do</string>
+    <string name="appointments_button">Appointments</string>
+    <string name="important_contacts_button">Important Contacts</string>
+    <string name="workout_check">Did you do your workout today? </string>
+
+
+    <string name="task_default">Task</string>
+    <string name="priority_default">Low</string>
+    <string name="due_by_default">NA</string>
+    <string name="owner_default">No Owner</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password </string>
+    <string name="action_login">Log In </string>
+    <string name="action_login_short">Log In</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="login_link">You Do not have an account? Sign up</string>
+    <string name="password_reset_link"> Forgot Your Password? </string>
+    <string name="authentication_failed">Authentication Failed</string>
+    <!-- Strings related to sign up -->
+
+    <string name="title_activity_signup">Sign Up</string>
+    <string name="action_sign_up">Sign Up </string>
+    <string name="action_sign_up_short">Sign up</string>
+    <string name="sigin_link">Already have an account? login </string>
+
+    <!-- Strings Related to Password Reset Screen -->
+    <string name="reset_prompt">Please enter your email id so we can send you the instructions to reset yor password. </string>
+    <string name="forgot_password">Forgot Password? </string>
+    <string name="reset_password_button">Reset Password</string>
+    <string name="back_button"> Back </string>
+
+    <!-- Strings for add members-->
+    <string name="prompt_name"> Name </string>
+    <string name="dob_prompt">Date of Birth </string>
+    <string name="add_button">Add </string>
+    <string name="cancel_button">Cancel </string>
+
+    <!--Strings for add to do tasks-->
+    <string name="task_hint">Task</string>
+    <string name="high_priority">High</string>
+    <string name="low_priority">Low</string>
+    <string name="medium_priority">Medium</string>
+
+
+
+
+</resources>
