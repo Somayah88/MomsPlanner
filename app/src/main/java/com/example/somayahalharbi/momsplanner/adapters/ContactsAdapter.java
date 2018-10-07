@@ -1,4 +1,80 @@
 package com.example.somayahalharbi.momsplanner.adapters;
 
-public class ContactsAdapter {
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.somayahalharbi.momsplanner.R;
+import com.example.somayahalharbi.momsplanner.models.Contacts;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsAdapterViewHolder> {
+    private ArrayList<Contacts> contacts = new ArrayList<Contacts>();
+
+
+    @NonNull
+    @Override
+    public ContactsAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        Context context = viewGroup.getContext();
+        int layoutFromListItem = R.layout.contact_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(layoutFromListItem, viewGroup, false);
+
+        return new ContactsAdapterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ContactsAdapterViewHolder viewHolder, int position) {
+        String title = contacts.get(position).getTitle();
+        String email = contacts.get(position).getEmailAddress();
+        String phone = contacts.get(position).getPhone();
+        String contactAddress = contacts.get(position).getStreetAddress();
+        String contactCity = contacts.get(position).getCity();
+        String contactState = contacts.get(position).getState();
+        String contactZipCode = contacts.get(position).getZipCode();
+        String contactsUnit = contacts.get(position).getUnit();
+        String fullAdress;
+        if (!contactsUnit.isEmpty() || !contactsUnit.equals("")) {
+            fullAdress = contactAddress + " " + contactsUnit + ", " + contactCity + ", " + contactState + " " + contactZipCode;
+        } else {
+            fullAdress = contactAddress + ", " + contactCity + ", " + contactState + " " + contactZipCode;
+
+        }
+        viewHolder.contactTitle.setText(title);
+        viewHolder.contactEmail.setText(email);
+        viewHolder.contactPhoneNo.setText(phone);
+        viewHolder.address.setText(fullAdress);
+
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return 0;
+    }
+
+    public class ContactsAdapterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.title)
+        TextView contactTitle;
+        @BindView(R.id.contact_address)
+        TextView address;
+        @BindView(R.id.email)
+        TextView contactEmail;
+        @BindView(R.id.phone_no)
+        TextView contactPhoneNo;
+
+
+        public ContactsAdapterViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
 }

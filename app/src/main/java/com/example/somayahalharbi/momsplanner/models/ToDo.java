@@ -1,12 +1,97 @@
 package com.example.somayahalharbi.momsplanner.models;
 
-public class ToDo  {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ToDo implements Parcelable {
     private String toDo;
     private String owner;
     private int priority; // should be 1, 2, 3: 1 is highest
     private boolean checked;
-    //TODO: add the date field
-    //private long dueBy;
+    public static final Parcelable.Creator<ToDo> CREATOR = new Parcelable.Creator<ToDo>() {
+
+        @Override
+        public ToDo createFromParcel(Parcel in) {
+            return new ToDo(in);
+        }
+
+        @Override
+        public ToDo[] newArray(int size) {
+            return new ToDo[size];
+        }
+    };
+    private String dueBy;
+
+    public ToDo() {
+
+    }
+
+    private ToDo(Parcel in) {
+        this.toDo = in.readString();
+        this.owner = in.readString();
+        this.priority = in.readInt();
+        this.checked = in.readByte() != 0;
+        this.dueBy = in.readString();
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeString(toDo);
+        dest.writeString(owner);
+        dest.writeInt(priority);
+        dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeString(dueBy);
+
+
+    }
+
+    //Getters & Setters
+
+    public String getToDo() {
+        return toDo;
+    }
+
+    public void setToDo(String toDo) {
+        this.toDo = toDo;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    public String getDueBy() {
+        return dueBy;
+    }
+
+    public void setDueBy(String dueBy) {
+        this.dueBy = dueBy;
+    }
 
 
 
