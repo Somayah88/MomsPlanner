@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <EditText
         android:id="@+id/task"
@@ -19,38 +19,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/to_do_due_by"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="@string/due_by_hint"
+        android:inputType="none"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task" />
+
     <RadioGroup
         android:id="@+id/task_priority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:orientation="horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task">
+        app:layout_constraintTop_toBottomOf="@+id/to_do_due_by">
 
         <RadioButton
             android:id="@+id/high_priority"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/high_priority"
-            android:textColor="@color/high"/>
+            android:textColor="@color/high" />
+
         <RadioButton
             android:id="@+id/medium_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="@string/medium_priority"
-            android:textColor="@color/medium"/>
+            android:textColor="@color/medium" />
+
         <RadioButton
             android:id="@+id/low_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/low_priority"
-            android:textColor="@color/low"/>
+            android:textColor="@color/low" />
     </RadioGroup>
+
+    <Spinner
+        android:id="@+id/owner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.653"
+        app:layout_constraintStart_toEndOf="@+id/task_priority"
+        app:layout_constraintTop_toBottomOf="@+id/to_do_due_by">
+
+    </Spinner>
 
     <Button
         android:id="@+id/add_to_do"
@@ -77,5 +112,6 @@
         android:text="@string/cancel_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/task_priority" />
+
 
 </android.support.constraint.ConstraintLayout>

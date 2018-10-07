@@ -51,19 +51,43 @@
     <string name="reset_password_button">Reset Password</string>
     <string name="back_button"> Back </string>
 
-    <!-- Strings for add members-->
+    <!-- Strings for add members xml-->
     <string name="prompt_name"> Name </string>
     <string name="dob_prompt">Date of Birth </string>
     <string name="add_button">Add </string>
     <string name="cancel_button">Cancel </string>
 
-    <!--Strings for add to do tasks-->
+    <!--Strings for add to-do tasks xml-->
     <string name="task_hint">Task</string>
     <string name="high_priority">High</string>
     <string name="low_priority">Low</string>
     <string name="medium_priority">Medium</string>
+    <string name="due_by_hint">Due By</string>
 
 
+    <!--Strings for add appointments xml-->
+    <string name="prompt_appt_title">Title </string>
+    <string name="prompt_appt_location"> Where? </string>
+    <string name="prompt_appt_date">Date </string>
+    <string name="prompt_appt_time">Time </string>
+
+    <!-- Strings for add contacts xml-->
+    <string name="address_prompt">Address</string>
+    <string name="unit_prompt">Unit# </string>
+    <string name="city_prompt">City</string>
+    <string name="state_prompt">State</string>
+    <string name="zip_code_prompt">Zip Code</string>
+    <string name="phone_prompt">Phone# </string>
+    <string name="email_prompt">Email</string>
+
+    <!-- Strings related to recyclerview items-->
+    <string name="owner_title">Owner: </string>
+    <string name="due_by_title">Due By: </string>
+    <string name="priority_title">Priority</string>
+    <string name="title_default">Title</string>
+    <string name="appt_location">No Location</string>
+    <string name="member_name_default">Member Name</string>
+    <string name="member_dob_default">NA</string>
 
 
 </resources>
