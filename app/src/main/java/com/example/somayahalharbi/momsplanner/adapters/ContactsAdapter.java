@@ -41,13 +41,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         String contactState = contacts.get(position).getState();
         String contactZipCode = contacts.get(position).getZipCode();
         String contactsUnit = contacts.get(position).getUnit();
+
         String fullAdress;
-        if (!contactsUnit.isEmpty() || !contactsUnit.equals("")) {
+        if (!contactsUnit.equals("null")) {
+
             fullAdress = contactAddress + " " + contactsUnit + ", " + contactCity + ", " + contactState + " " + contactZipCode;
+
         } else {
+            //TODO: do something here
+
             fullAdress = contactAddress + ", " + contactCity + ", " + contactState + " " + contactZipCode;
 
         }
+
         viewHolder.contactTitle.setText(title);
         viewHolder.contactEmail.setText(email);
         viewHolder.contactPhoneNo.setText(phone);
@@ -58,7 +64,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public int getItemCount() {
-        return 0;
+        return contacts.size();
+    }
+
+    public void setData(ArrayList<Contacts> contactList) {
+        clear();
+        contacts = contactList;
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        int size = contacts.size();
+        contacts.clear();
+        notifyItemRangeChanged(0, size);
     }
 
     public class ContactsAdapterViewHolder extends RecyclerView.ViewHolder {

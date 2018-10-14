@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +18,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.example.somayahalharbi.momsplanner.adapters.AppointmentsAdapter;
+import com.example.somayahalharbi.momsplanner.models.Appointment;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -26,21 +32,84 @@ import butterknife.ButterKnife;
 public class AppointmentsActivity extends AppCompatActivity {
     @BindView(R.id.fab)
     FloatingActionButton addAppointmentFab;
+    @BindView(R.id.appointment_recyclerView)
+    RecyclerView apptRecyclerView;
+    @BindView(R.id.member_spinner)
+    Spinner memberSpinner;
+    private AppointmentsAdapter appointmentAdapter;
+    private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointments);
         ButterKnife.bind(this);
+        setDummyData();// TODO: Remove this
         addAppointmentFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addAppointment();
             }
         });
+        apptRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager appointmentLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        apptRecyclerView.setLayoutManager(appointmentLayoutManager);
+        appointmentAdapter = new AppointmentsAdapter();
+        apptRecyclerView.setAdapter(appointmentAdapter);
+        appointmentAdapter.setData(appointmentList);
+        // CAN BE SEPERATE METHID
+
+        String[] owners = {"Faisal", "Somayah", "Sarah"};
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
+        memberSpinner.setAdapter(adapter);
+        memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //TODO: implement this
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
     }
 
+    //TODO: Delete this and get real data
+    private void setDummyData() {
+        Appointment appointment = new Appointment();
+        appointment.setApptDate("11/12/2018");
+        appointment.setApptLocation("South Slope Pediatrics");
+        appointment.setApptOwner("Sarah");
+        appointment.setApptTime("9:30 AM");
+        appointment.setApptTitle("Sarah 15 months checkup");
+        appointmentList.add(appointment);
+        appointment = new Appointment();
+        appointment.setApptDate("11/1/2019");
+        appointment.setApptLocation("Happy Teeth Dentist");
+        appointment.setApptOwner("Faisal");
+        appointment.setApptTime("11:30 AM");
+        appointment.setApptTitle("Dentist cleaning appointment");
+        appointmentList.add(appointment);
+        appointment = new Appointment();
+        appointment.setApptDate("8/11/2018");
+        appointment.setApptLocation("Faisal's school");
+        appointment.setApptOwner("Faisal");
+        appointment.setApptTime("3:00 PM");
+        appointment.setApptTitle("Parent teachers conferences");
+        appointmentList.add(appointment);
+
+
+    }
     private void addAppointment() {
 
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);

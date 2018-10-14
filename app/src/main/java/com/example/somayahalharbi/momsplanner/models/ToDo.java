@@ -8,6 +8,8 @@ public class ToDo implements Parcelable {
     private String owner;
     private int priority; // should be 1, 2, 3: 1 is highest
     private boolean checked;
+    private String dueBy;
+
     public static final Parcelable.Creator<ToDo> CREATOR = new Parcelable.Creator<ToDo>() {
 
         @Override
@@ -20,7 +22,6 @@ public class ToDo implements Parcelable {
             return new ToDo[size];
         }
     };
-    private String dueBy;
 
     public ToDo() {
 

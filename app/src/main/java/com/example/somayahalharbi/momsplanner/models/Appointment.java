@@ -30,6 +30,10 @@ public class Appointment implements Parcelable {
 
     }
 
+    public Appointment() {
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

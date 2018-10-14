@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".AppointmentsActivity">
 
+    <Spinner
+        android:id="@+id/member_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/appointment_recyclerView"
         android:layout_width="match_parent"
@@ -18,7 +25,7 @@
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/member_spinner">
 
     </android.support.v7.widget.RecyclerView>
 

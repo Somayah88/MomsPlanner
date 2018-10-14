@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ApointmentsAdapter extends RecyclerView.Adapter<ApointmentsAdapter.AppointmentsAdapterViewHolder> {
+public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentsAdapterViewHolder> {
     private ArrayList<Appointment> appointments = new ArrayList<>();
 
 
