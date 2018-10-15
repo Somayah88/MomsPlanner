@@ -213,7 +213,7 @@ public class ToDoActivity extends AppCompatActivity {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                
+
 
             }
 

@@ -3,11 +3,13 @@ package com.example.somayahalharbi.momsplanner;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,9 +19,18 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.somayahalharbi.momsplanner.adapters.AppointmentsAdapter;
 import com.example.somayahalharbi.momsplanner.models.Appointment;
+import com.example.somayahalharbi.momsplanner.models.Member;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,16 +49,54 @@ public class AppointmentsActivity extends AppCompatActivity {
     Spinner memberSpinner;
     private AppointmentsAdapter appointmentAdapter;
     private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
-
-
-
+    public static final String APPOINTMENT_PATH = "appointment";
+    private static FirebaseDatabase database;
+    DatabaseReference apptRef;
+    DatabaseReference ownersRef;
+    FirebaseUser user;
+    FirebaseAuth mFirebaseAuth;
+    String ownerId = "0";
+    private ArrayList<Member> members = new ArrayList<Member>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointments);
         ButterKnife.bind(this);
-        setDummyData();// TODO: Remove this
+        //setDummyData();// TODO: Remove this
+
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        user = mFirebaseAuth.getCurrentUser();
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+            //    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        }
+        apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH);
+        apptRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                appointmentList = new ArrayList<>();
+                for (DataSnapshot apptsnapshot : dataSnapshot.getChildren()) {
+                    Appointment appt = apptsnapshot.getValue(Appointment.class);
+                    appointmentList.add(appt);
+
+
+                }
+                appointmentAdapter.setData(appointmentList);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("AppointmentActivity", "loadAppointments:onCancelled", databaseError.toException());
+
+
+            }
+        });
+
+        ownersRef = database.getReference("users").child(user.getUid()).child("member");
         addAppointmentFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +114,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         String[] owners = {"Faisal", "Somayah", "Sarah"};
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
         memberSpinner.setAdapter(adapter);
         memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -110,6 +159,38 @@ public class AppointmentsActivity extends AppCompatActivity {
 
 
     }
+
+    private ArrayList<String> getMembers() {
+
+        final ArrayList<String> owners = new ArrayList<>();
+        final ArrayList<Member> members = new ArrayList<>();
+
+        ownersRef.addValueEventListener(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ownersSnapshot : dataSnapshot.getChildren()) {
+                    Member member = ownersSnapshot.getValue(Member.class);
+                    members.add(member);
+                    String owner = member.getName();
+                    owners.add(owner);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("AppointmentActivity", "loadAppointments:onCancelled", databaseError.toException());
+
+
+            }
+        });
+        return owners;
+
+
+    }
+
     private void addAppointment() {
 
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -125,25 +206,29 @@ public class AppointmentsActivity extends AppCompatActivity {
         final EditText apptDate = dialogView.findViewById(R.id.appt_date);
         final EditText apptTime = dialogView.findViewById(R.id.appt_time);
 
-        //TODO: replace dummy data
 
         // Spinner
-        String[] owners = {"Faisal", "Somayah", "Sarah"};
+        //   String[] owners = {"Faisal", "Somayah", "Sarah"};
 
 
         final Spinner ownersSpinner = dialogView.findViewById(R.id.owner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
         ownersSpinner.setAdapter(adapter);
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO: implement this
+                ownerId = members.get(i).getId();
+                Toast.makeText(getApplicationContext(), members.get(i).getName(), Toast.LENGTH_LONG).show();
+
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                ownerId = "0";
+
 
             }
         });
@@ -215,7 +300,20 @@ public class AppointmentsActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: add to do task functionality goes here
+
+                Appointment appt = new Appointment();
+                appt.setApptTitle(apptTitle.getText().toString());
+                appt.setApptLocation(apptLocation.getText().toString());
+                appt.setApptTime(apptTime.getText().toString());
+                appt.setApptDate(apptDate.getText().toString());
+                //  if(!ownerId.equals("0"))
+                //apptRef.child(ownerId).push().setValue(appt);
+                apptRef.push().setValue(appt);
+
+                // appt.setApptOwner(ownersSpinner.getSelectedItem().toString());
+
+                dialog.dismiss();
+
             }
 
         });
