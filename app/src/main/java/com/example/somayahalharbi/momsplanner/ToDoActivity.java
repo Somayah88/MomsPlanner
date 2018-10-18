@@ -206,7 +206,7 @@ public class ToDoActivity extends AppCompatActivity {
         //String[] owners = {"Faisal", "Somayah", "Sarah"};
 
 
-        final Spinner ownersSpinner = dialogView.findViewById(R.id.owner);
+        final Spinner ownersSpinner = dialogView.findViewById(R.id.todo_owner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
         ownersSpinner.setAdapter(adapter);
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -69,8 +69,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appt_location" />
 
-    <Spinner
-        android:id="@+id/owner"
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/appt_owner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -78,6 +78,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:hint="@string/spinner_owner_prompt"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appt_date" />
@@ -96,7 +98,7 @@
         app:layout_constraintEnd_toStartOf="@+id/cancel_appt_button"
         app:layout_constraintHorizontal_bias="0.572"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/owner" />
+        app:layout_constraintTop_toBottomOf="@+id/appt_owner" />
 
     <Button
         android:id="@+id/cancel_appt_button"
@@ -108,6 +110,6 @@
         android:text="@string/cancel_button"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/owner" />
+        app:layout_constraintTop_toBottomOf="@+id/appt_owner" />
 
 </android.support.constraint.ConstraintLayout>

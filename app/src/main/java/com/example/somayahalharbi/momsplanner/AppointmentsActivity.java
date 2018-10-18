@@ -11,15 +11,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.example.somayahalharbi.momsplanner.adapters.AppointmentsAdapter;
 import com.example.somayahalharbi.momsplanner.models.Appointment;
@@ -31,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ public class AppointmentsActivity extends AppCompatActivity {
     FloatingActionButton addAppointmentFab;
     @BindView(R.id.appointment_recyclerView)
     RecyclerView apptRecyclerView;
-    @BindView(R.id.member_spinner)
-    Spinner memberSpinner;
+    // @BindView(R.id.member_spinner)
+    // Spinner memberSpinner;
     private AppointmentsAdapter appointmentAdapter;
     private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
     public static final String APPOINTMENT_PATH = "appointment";
@@ -57,6 +57,8 @@ public class AppointmentsActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     String ownerId = "0";
     private ArrayList<Member> members = new ArrayList<Member>();
+    private int mPosition;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,23 +116,34 @@ public class AppointmentsActivity extends AppCompatActivity {
         String[] owners = {"Faisal", "Somayah", "Sarah"};
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
-        memberSpinner.setAdapter(adapter);
+      /*  ArrayAdapter<String> memberAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
+        memberSpinner.setAdapter(memberAdapter);
         memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO: implement this
+                mPosition=1;
+                // Toast.makeText(getApplicationContext(), members.get(i).getName(), Toast.LENGTH_LONG).show();
+                Log.w("AppointmentActivity", "Item selected for sorting "+ members.get(i).getName());
+
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                mPosition=3;
 
             }
         });
+        */
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     //TODO: Delete this and get real data
@@ -163,7 +176,6 @@ public class AppointmentsActivity extends AppCompatActivity {
     private ArrayList<String> getMembers() {
 
         final ArrayList<String> owners = new ArrayList<>();
-        final ArrayList<Member> members = new ArrayList<>();
 
         ownersRef.addValueEventListener(new ValueEventListener() {
 
@@ -210,28 +222,46 @@ public class AppointmentsActivity extends AppCompatActivity {
         // Spinner
         //   String[] owners = {"Faisal", "Somayah", "Sarah"};
 
+        ArrayAdapter<String> ownersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getMembers());
+        final MaterialBetterSpinner ownersSpinner = dialogView.findViewById(R.id.appt_owner);
+        ownersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        final Spinner ownersSpinner = dialogView.findViewById(R.id.owner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
-        ownersSpinner.setAdapter(adapter);
-        ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        ownersSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mPosition = i;
+
+            }
+        });
+              /*  setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO: implement this
-                ownerId = members.get(i).getId();
-                Toast.makeText(getApplicationContext(), members.get(i).getName(), Toast.LENGTH_LONG).show();
+                mPosition=i;
+                  Toast.makeText(getApplicationContext(), members.get(i).getName(), Toast.LENGTH_LONG).show();
+                Log.w("AppointmentActivity", "Item selected "+ adapterView.getSelectedItem().toString());
+
+
 
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                ownerId = "0";
+               // ownerId = "0";
+                Log.w("AppointmentActivity", "No Item selected ");
+
 
 
             }
-        });
+        });*/
+        ownersSpinner.setAdapter(ownersAdapter);
+        ownersAdapter.notifyDataSetChanged();
+
+
         //TODO: extract this part to reuse it between all activities.
         //Date Picker Dialog
         final Calendar myCalendar = Calendar.getInstance();
@@ -268,14 +298,33 @@ public class AppointmentsActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int hour, int minutes) {
                 myCalendar.set(Calendar.HOUR, hour);
                 myCalendar.set(Calendar.MINUTE, minutes);
-                //TODO: show AM or PM
+                String AM_PM;
+                if (hour < 12) {
+                    AM_PM = "AM";
+                } else {
+                    AM_PM = "PM";
+                }
+                int hour_12_format;
+
+                if (hour > 12) {
+
+                    // If the hour is greater than or equal to 12
+                    // Then we subtract 12 from the hour to make it 12 hour format time
+                    hour_12_format = hour - 12;
+                } else {
+                    hour_12_format = hour;
+                }
+
+
                /*
                String myFormat = "hh:mm a"; // your own format
                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
                String  formated_time = sdf.format(myCalendar.getTime());
                apptTime.setText(formated_time);
                */
-                apptTime.setText(hour + ":" + minutes);
+                apptTime.setText(hour_12_format + ":" + minutes + " " + AM_PM);
+                //TODO: make time format 00:00
+
 
 
             }
@@ -285,7 +334,7 @@ public class AppointmentsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 new TimePickerDialog(dialogView.getContext(), time,
                         myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),
-                        true).show();
+                        false).show();
             }
         });
 
@@ -306,9 +355,17 @@ public class AppointmentsActivity extends AppCompatActivity {
                 appt.setApptLocation(apptLocation.getText().toString());
                 appt.setApptTime(apptTime.getText().toString());
                 appt.setApptDate(apptDate.getText().toString());
+                appt.setApptOwner(members.get(mPosition).getId().toString());
                 //  if(!ownerId.equals("0"))
-                //apptRef.child(ownerId).push().setValue(appt);
+                // appt.setApptOwner( ownersSpinner.getSelectedItem().toString());
+
+                Log.w("AppointmentActivity", "Item selected " + mPosition);
+
                 apptRef.push().setValue(appt);
+                // TODO: decide which one:
+                // //apptRef.child(members.get(mPosition).getId()).push().setValue(appt);
+                //apptRef.child(ownerId).push().setValue(appt);
+                //apptRef.push().setValue(appt);
 
                 // appt.setApptOwner(ownersSpinner.getSelectedItem().toString());
 
