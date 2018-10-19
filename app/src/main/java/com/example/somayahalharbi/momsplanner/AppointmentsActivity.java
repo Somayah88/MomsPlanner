@@ -255,8 +255,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         final EditText apptTime = dialogView.findViewById(R.id.appt_time);
 
 
-        // Spinner
-        //   String[] owners = {"Faisal", "Somayah", "Sarah"};
+
 
         ArrayAdapter<String> ownersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, owners);
         final MaterialBetterSpinner ownersSpinner = dialogView.findViewById(R.id.appt_owner);
@@ -271,29 +270,6 @@ public class AppointmentsActivity extends AppCompatActivity {
 
             }
         });
-              /*  setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO: implement this
-                mPosition=i;
-                  Toast.makeText(getApplicationContext(), members.get(i).getName(), Toast.LENGTH_LONG).show();
-                Log.w("AppointmentActivity", "Item selected "+ adapterView.getSelectedItem().toString());
-
-
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-               // ownerId = "0";
-                Log.w("AppointmentActivity", "No Item selected ");
-
-
-
-            }
-        });*/
         ownersSpinner.setAdapter(ownersAdapter);
         ownersAdapter.notifyDataSetChanged();
 
@@ -384,6 +360,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO: add data validation & default values
 
                 Appointment appt = new Appointment();
                 appt.setApptTitle(apptTitle.getText().toString());
@@ -398,15 +375,10 @@ public class AppointmentsActivity extends AppCompatActivity {
                 Log.w("AppointmentActivity", "Item selected " + mPosition);
 
                 apptRef.push().setValue(appt);
-                // TODO: decide which one:
                 Log.w("addApptDialog", "Members list has " + members.size());
                 Log.w("addApptDialog", "Owners list has " + owners.size());
-                // //apptRef.child(members.get(mPosition).getId()).push().setValue(appt);
-                //apptRef.child(ownerId).push().setValue(appt);
-                //apptRef.push().setValue(appt);
 
-                // appt.setApptOwner(ownersSpinner.getSelectedItem().toString());
-                getFilteredData(mPosition);
+                //TODO: change the main filter selection
 
                 dialog.dismiss();
 
@@ -415,6 +387,9 @@ public class AppointmentsActivity extends AppCompatActivity {
         });
         dialog.show();
     }
+//TODO: swipe to delete
+    //TODO: edit if time permits
+
 
 
 }

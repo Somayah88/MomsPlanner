@@ -66,7 +66,6 @@ public class FamilyActivity extends AppCompatActivity {
                 addMembers();
             }
         });
-        // setDummyData(); //TODO: remove this
 
 
         familyMembersRecyclerView.setHasFixedSize(true);
@@ -102,20 +101,7 @@ public class FamilyActivity extends AppCompatActivity {
 
     }
 
-    private void setDummyData() {
-        Member member = new Member();
-        member.setDOB("11/13/2011");
-        member.setName("Faisal");
-        membersList.add(member);
-        myRef.child("member").push().setValue(member);
-        member = new Member();
-        member.setDOB("9/19/2017");
-        member.setName("Sarah");
-        membersList.add(member);
-        myRef.child("member").push().setValue(member);
 
-
-    }
 
     private void addMembers(){
         final AlertDialog.Builder dialogBuilder=new AlertDialog.Builder(this);
@@ -130,6 +116,7 @@ public class FamilyActivity extends AppCompatActivity {
         final EditText birthday = dialogView.findViewById(R.id.member_dob);
 
         final Calendar myCalendar = Calendar.getInstance();
+        //TODO: easier date picker
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -183,6 +170,6 @@ public class FamilyActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-
+//TODO: swipe to delete
 
 }

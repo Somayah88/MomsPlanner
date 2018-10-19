@@ -277,8 +277,6 @@ public class ToDoActivity extends AppCompatActivity {
                 if (priorityId == R.id.low_priority)
                     priority = 1;
                 todo.setPriority(priority);
-
-
                 todo.setDueBy(dueBy.getText().toString());
                 toDoRef.push().setValue(todo);
                 dialog.dismiss();
@@ -288,6 +286,9 @@ public class ToDoActivity extends AppCompatActivity {
         });
         dialog.show();
     }
+//TODO: add filtering functionality
+    //TODO: add swipe to delete
+    //TODO: update item when checked
 
 
 }

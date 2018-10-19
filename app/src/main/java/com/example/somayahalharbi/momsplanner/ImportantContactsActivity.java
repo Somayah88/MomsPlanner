@@ -89,42 +89,9 @@ public class ImportantContactsActivity extends AppCompatActivity {
 
     }
 
-    private void setDummyData() {
-        Contacts contact = new Contacts();
-        contact.setCity("Brooklyn");
-        contact.setTitle("Happy Teeth Dentist");
-        contact.setEmailAddress("customer.service@happytheeth.com");
-        contact.setPhone("123-234-2342");
-        contact.setState("New York");
-        contact.setUnit("null");
-        contact.setStreetAddress("123 5th ave");
-        contact.setZipCode("11215");
-        contactsList.add(contact);
-        contact = new Contacts();
-        contact.setCity("Brooklyn");
-        contact.setTitle("Faisal's Teacher");
-        contact.setEmailAddress("ms.jay@ps.org");
-        contact.setPhone("123-234-2342");
-        contact.setState("New York");
-        contact.setUnit("null");
-        contact.setStreetAddress("234 5th ave");
-        contact.setZipCode("11215");
-        contactsList.add(contact);
-        contact = new Contacts();
-        contact.setCity("New York");
-        contact.setTitle("South Slope Pediatrics");
-        contact.setEmailAddress("scustomer@southslope.com");
-        contact.setPhone("205-986-2341");
-        contact.setState("New York");
-        contact.setStreetAddress("683 8th st");
-        contact.setZipCode("11221");
-        contact.setUnit("2L");
-        contactsList.add(contact);
-
-
-    }
 
     private void addContacts() {
+        //TODO: validate data and put default for nt available data
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_contact, null);
