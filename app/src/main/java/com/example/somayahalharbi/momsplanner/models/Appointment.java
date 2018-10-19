@@ -21,12 +21,16 @@ public class Appointment implements Parcelable {
     private String apptLocation;
     private String apptOwner;
 
+
+    private String ownerId;
+
     public Appointment(Parcel in) {
         this.apptTitle = in.readString();
         this.apptDate = in.readString();
         this.apptTime = in.readString();
         this.apptLocation = in.readString();
         this.apptOwner = in.readString();
+        this.ownerId = in.readString();
 
     }
 
@@ -46,6 +50,7 @@ public class Appointment implements Parcelable {
         dest.writeString(apptTime);
         dest.writeString(apptLocation);
         dest.writeString(apptOwner);
+        dest.writeString(ownerId);
 
 
     }
@@ -90,5 +95,13 @@ public class Appointment implements Parcelable {
 
     public void setApptOwner(String apptOwner) {
         this.apptOwner = apptOwner;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 }

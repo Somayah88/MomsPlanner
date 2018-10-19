@@ -7,9 +7,13 @@
     tools:context=".AppointmentsActivity">
 
     <Spinner
-        android:id="@+id/member_spinner"
+        android:id="@+id/appt_member_spinner"
+        android:layout_margin="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="@string/spinner_filter_prompt"
+        android:padding="8dp"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +29,7 @@
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/member_spinner">
+        app:layout_constraintTop_toBottomOf="@id/appt_member_spinner">
 
     </android.support.v7.widget.RecyclerView>
 
