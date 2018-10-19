@@ -127,10 +127,11 @@ public class AppointmentsActivity extends AppCompatActivity {
     }
 
     private void getData(int position) {
-        if (position == (owners.size() - 1))
-            getAllData();
-        else
+        if (position < owners.size() - 1)
             getFilteredData(position);
+
+        else
+            getAllData();
     }
 
     private void createFilterSpinner() {
@@ -140,11 +141,15 @@ public class AppointmentsActivity extends AppCompatActivity {
         // final Spinner memberSpinner=findViewById(R.id.appt_member_spinner);
         Log.w("create list", "Members list has " + members.size());
         Log.w("create list", "Owners list has " + owners.size());
+        memberSpinner.setAdapter(membersAdapter);
+        memberSpinner.setSelection(owners.size() - 1);
+
+
 
         memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                getFilteredData(i);
+                getData(i);
 
 
             }
@@ -156,8 +161,8 @@ public class AppointmentsActivity extends AppCompatActivity {
         });
 
 
-        memberSpinner.setAdapter(membersAdapter);
         membersAdapter.notifyDataSetChanged();
+
 
     }
 
