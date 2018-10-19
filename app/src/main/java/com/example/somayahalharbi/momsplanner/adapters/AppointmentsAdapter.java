@@ -10,14 +10,22 @@ import android.widget.TextView;
 
 import com.example.somayahalharbi.momsplanner.R;
 import com.example.somayahalharbi.momsplanner.models.Appointment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.somayahalharbi.momsplanner.AppointmentsActivity.APPOINTMENT_PATH;
+
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentsAdapterViewHolder> {
     private ArrayList<Appointment> appointments = new ArrayList<>();
+    private static FirebaseDatabase database;
+
 
 
     @NonNull
@@ -61,6 +69,27 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         int size = appointments.size();
         appointments.clear();
         notifyItemRangeRemoved(0, size);
+    }
+
+    public void remove(int position) {
+
+        DatabaseReference apptRef;
+        FirebaseUser user;
+        FirebaseAuth mFirebaseAuth;
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        user = mFirebaseAuth.getCurrentUser();
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+            //    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        }
+        Appointment appt = appointments.get(position);
+        apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH).child(appt.getApptId());
+        apptRef.removeValue();
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, appointments.size());
+
+
     }
 
     public class AppointmentsAdapterViewHolder extends RecyclerView.ViewHolder {

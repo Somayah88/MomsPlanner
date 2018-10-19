@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -95,6 +96,27 @@ public class AppointmentsActivity extends AppCompatActivity {
         appointmentAdapter = new AppointmentsAdapter();
         apptRecyclerView.setAdapter(appointmentAdapter);
         appointmentAdapter.setData(appointmentList);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (direction == ItemTouchHelper.LEFT) {
+                    appointmentAdapter.remove(position);
+
+                }
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(apptRecyclerView);
+
         // CAN BE SEPERATE METHID
 
 
@@ -367,14 +389,22 @@ public class AppointmentsActivity extends AppCompatActivity {
                 appt.setApptLocation(apptLocation.getText().toString());
                 appt.setApptTime(apptTime.getText().toString());
                 appt.setApptDate(apptDate.getText().toString());
-                appt.setApptOwner(members.get(mPosition).getName());
-                appt.setOwnerId(members.get(mPosition).getId());
+                if (mPosition < owners.size() - 1) {
+                    appt.setApptOwner(members.get(mPosition).getName());
+                    appt.setOwnerId(members.get(mPosition).getId());
+                } else {
+                    appt.setApptOwner("No Owner");
+                    appt.setOwnerId("0");
+
+                }
                 //  if(!ownerId.equals("0"))
                 // appt.setApptOwner( ownersSpinner.getSelectedItem().toString());
 
                 Log.w("AppointmentActivity", "Item selected " + mPosition);
+                String key = apptRef.push().getKey();
+                appt.setApptId(key);
 
-                apptRef.push().setValue(appt);
+                apptRef.child(key).setValue(appt);
                 Log.w("addApptDialog", "Members list has " + members.size());
                 Log.w("addApptDialog", "Owners list has " + owners.size());
 
@@ -387,8 +417,8 @@ public class AppointmentsActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-//TODO: swipe to delete
     //TODO: edit if time permits
+    //TODO: data won't update immediately when new appointment added.
 
 
 
