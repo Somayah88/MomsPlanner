@@ -2,11 +2,13 @@ package com.example.somayahalharbi.momsplanner;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +57,6 @@ public class FamilyActivity extends AppCompatActivity {
         user = mFirebaseAuth.getCurrentUser();
         if (database == null) {
             database = FirebaseDatabase.getInstance();
-            //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         }
         myRef = database.getReference("users").child(user.getUid()).child("member");
@@ -97,6 +98,26 @@ public class FamilyActivity extends AppCompatActivity {
             }
         };
         myRef.addValueEventListener(membersListener);
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (direction == ItemTouchHelper.LEFT) {
+                    familyMembersAdapter.removeMember(position);
+
+                }
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(familyMembersRecyclerView);
+
 
 
     }

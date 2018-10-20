@@ -2,11 +2,13 @@ package com.example.somayahalharbi.momsplanner;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +88,26 @@ public class ImportantContactsActivity extends AppCompatActivity {
         };
         myRef.addValueEventListener(contactsListener);
 
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (direction == ItemTouchHelper.LEFT) {
+                    contactsAdapter.removeContact(position);
+
+
+                }
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(contactsRecyclerView);
 
     }
 
@@ -125,7 +147,9 @@ public class ImportantContactsActivity extends AppCompatActivity {
                 contacts.setPhone(phone.getText().toString());
                 contacts.setEmailAddress(email.getText().toString());
                 contacts.setCity(city.getText().toString());
-                myRef.push().setValue(contacts);
+                String key = myRef.push().getKey();
+                contacts.setId(key);
+                myRef.child(key).setValue(contacts);
                 dialog.dismiss();
 
 

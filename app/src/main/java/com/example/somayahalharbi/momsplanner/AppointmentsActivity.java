@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,8 +60,9 @@ public class AppointmentsActivity extends AppCompatActivity {
     ArrayList<String> owners;
     private AppointmentsAdapter appointmentAdapter;
     private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
-    // ArrayAdapter<String> membersAdapter;
     private int mPosition;
+    private ArrayList<String> spinnerMembers;
+    private int filterSelection;
 
 
     @Override
@@ -70,18 +70,17 @@ public class AppointmentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointments);
         ButterKnife.bind(this);
-
+        Log.v("Appointment Activity", "On  create called");
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         user = mFirebaseAuth.getCurrentUser();
         if (database == null) {
             database = FirebaseDatabase.getInstance();
-            //    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
         }
 
 
         getMembers();
+
 
         addAppointmentFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +107,14 @@ public class AppointmentsActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
-                    appointmentAdapter.remove(position);
+                    Appointment appt = appointmentList.get(position);
 
+                    apptRef.child(appt.getApptId()).removeValue();
+                    // appointmentAdapter.remove(position);
+                    // getData(filterSelection);
+                    appointmentAdapter.setData(appointmentList);
+                    appointmentAdapter.notifyDataSetChanged();
+                    //TODO: fix this
                 }
 
             }
@@ -117,7 +122,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(apptRecyclerView);
 
-        // CAN BE SEPERATE METHID
+        // CAN BE SEPARATE METHOD
 
 
     }
@@ -125,12 +130,12 @@ public class AppointmentsActivity extends AppCompatActivity {
     private void getAllData() {
 
         apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH);
+        appointmentList = new ArrayList<>();
         apptRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                appointmentList = new ArrayList<>();
-                for (DataSnapshot apptsnapshot : dataSnapshot.getChildren()) {
-                    Appointment appt = apptsnapshot.getValue(Appointment.class);
+                for (DataSnapshot apptSnapshot : dataSnapshot.getChildren()) {
+                    Appointment appt = apptSnapshot.getValue(Appointment.class);
                     appointmentList.add(appt);
 
 
@@ -157,22 +162,28 @@ public class AppointmentsActivity extends AppCompatActivity {
     }
 
     private void createFilterSpinner() {
+        spinnerMembers = new ArrayList<>();
+        spinnerMembers.addAll(owners);
+        spinnerMembers.remove(owners.size() - 1);
+        spinnerMembers.add("All");
 
-        ArrayAdapter<String> membersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, owners);
+
+        ArrayAdapter<String> membersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerMembers);
         membersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // final Spinner memberSpinner=findViewById(R.id.appt_member_spinner);
         Log.w("create list", "Members list has " + members.size());
         Log.w("create list", "Owners list has " + owners.size());
         memberSpinner.setAdapter(membersAdapter);
-        memberSpinner.setSelection(owners.size() - 1);
+        memberSpinner.setSelection(spinnerMembers.size() - 1);
 
 
 
         memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.w("Filter Selected", "position is " + i);
+                filterSelection = i;
                 getData(i);
-
 
             }
 
@@ -188,9 +199,10 @@ public class AppointmentsActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+    private void resetMemberSpinner() {
+        memberSpinner.setSelection(spinnerMembers.size() - 1);
+        filterSelection = spinnerMembers.size() - 1;
+
     }
 
     private void getFilteredData(int position) {
@@ -203,7 +215,6 @@ public class AppointmentsActivity extends AppCompatActivity {
         queryRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                appointmentList = new ArrayList<>();
                 for (DataSnapshot ownersSnapshot : dataSnapshot.getChildren()) {
                     Appointment appt = ownersSnapshot.getValue(Appointment.class);
                     appointmentList.add(appt);
@@ -397,8 +408,6 @@ public class AppointmentsActivity extends AppCompatActivity {
                     appt.setOwnerId("0");
 
                 }
-                //  if(!ownerId.equals("0"))
-                // appt.setApptOwner( ownersSpinner.getSelectedItem().toString());
 
                 Log.w("AppointmentActivity", "Item selected " + mPosition);
                 String key = apptRef.push().getKey();
@@ -409,6 +418,8 @@ public class AppointmentsActivity extends AppCompatActivity {
                 Log.w("addApptDialog", "Owners list has " + owners.size());
 
                 //TODO: change the main filter selection
+                //resetMemberSpinner();
+                // getAllData();
 
                 dialog.dismiss();
 
@@ -419,7 +430,13 @@ public class AppointmentsActivity extends AppCompatActivity {
     }
     //TODO: edit if time permits
     //TODO: data won't update immediately when new appointment added.
+//TODO: when swipe to delete the adapter becomes empty and when select All as filtering criteria it won't behave properly.
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllData();
 
+    }
 
 }

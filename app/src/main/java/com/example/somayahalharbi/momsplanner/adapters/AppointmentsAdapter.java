@@ -80,15 +80,25 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         user = mFirebaseAuth.getCurrentUser();
         if (database == null) {
             database = FirebaseDatabase.getInstance();
-            //    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         }
         Appointment appt = appointments.get(position);
         apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH).child(appt.getApptId());
         apptRef.removeValue();
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, appointments.size());
 
+       /* apptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().removeValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
 
     }
 

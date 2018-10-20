@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import com.example.somayahalharbi.momsplanner.R;
 import com.example.somayahalharbi.momsplanner.models.Contacts;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -18,6 +22,7 @@ import butterknife.ButterKnife;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsAdapterViewHolder> {
     private ArrayList<Contacts> contacts = new ArrayList<Contacts>();
+    private static FirebaseDatabase database;
 
 
     @NonNull
@@ -95,4 +100,23 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             ButterKnife.bind(this, itemView);
         }
     }
+
+    public void removeContact(int position) {
+        DatabaseReference apptRef;
+        FirebaseUser user;
+        FirebaseAuth mFirebaseAuth;
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        user = mFirebaseAuth.getCurrentUser();
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+
+        }
+        Contacts contact = contacts.get(position);
+        apptRef = database.getReference("users").child(user.getUid()).child("contact").child(contact.getId());
+        apptRef.removeValue();
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
+
 }

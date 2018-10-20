@@ -14,6 +14,9 @@ public class Contacts implements Parcelable {
     private String emailAddress;
 
 
+    private String id;
+
+
     public static final Parcelable.Creator<Contacts> CREATOR
             = new Parcelable.Creator<Contacts>() {
         public Contacts createFromParcel(Parcel in) {
@@ -38,6 +41,7 @@ public class Contacts implements Parcelable {
         this.zipCode = in.readString();
         this.phone = in.readString();
         this.emailAddress = in.readString();
+        this.id = in.readString();
 
     }
 
@@ -56,6 +60,7 @@ public class Contacts implements Parcelable {
         dest.writeString(zipCode);
         dest.writeString(phone);
         dest.writeString(emailAddress);
+        dest.writeString(id);
 
     }
 
@@ -123,6 +128,14 @@ public class Contacts implements Parcelable {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 

@@ -10,14 +10,22 @@ import android.widget.TextView;
 
 import com.example.somayahalharbi.momsplanner.R;
 import com.example.somayahalharbi.momsplanner.models.Member;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.somayahalharbi.momsplanner.FamilyActivity.MEMBER;
+
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAdapterViewHolder> {
     private ArrayList<Member> members = new ArrayList<Member>();
+    private static FirebaseDatabase database;
+
 
 
     @NonNull
@@ -68,6 +76,23 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
             ButterKnife.bind(this, itemView);
 
         }
+    }
+
+    public void removeMember(int position) {
+        DatabaseReference apptRef;
+        FirebaseUser user;
+        FirebaseAuth mFirebaseAuth;
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        user = mFirebaseAuth.getCurrentUser();
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+
+        }
+        Member member = members.get(position);
+        apptRef = database.getReference("users").child(user.getUid()).child(MEMBER).child(member.getId());
+        apptRef.removeValue();
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
 }
