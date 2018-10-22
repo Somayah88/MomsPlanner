@@ -37,11 +37,11 @@ import butterknife.ButterKnife;
 public class FamilyActivity extends AppCompatActivity {
     @BindView(R.id.add_member_fab)
     FloatingActionButton addMember;
-    public static final String MEMBER = "member";
-    private static FirebaseDatabase database;
     @BindView(R.id.family_member_recyclerView)
     RecyclerView familyMembersRecyclerView;
-    DatabaseReference myRef;
+    public static final String MEMBER = "member";
+    private static FirebaseDatabase database;
+    private DatabaseReference familyMemberRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
     private MembersAdapter familyMembersAdapter;
@@ -59,7 +59,7 @@ public class FamilyActivity extends AppCompatActivity {
             database = FirebaseDatabase.getInstance();
 
         }
-        myRef = database.getReference("users").child(user.getUid()).child("member");
+        familyMemberRef = database.getReference("users").child(user.getUid()).child("member");
         //#########################################################
         addMember.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +74,6 @@ public class FamilyActivity extends AppCompatActivity {
         familyMembersRecyclerView.setLayoutManager(membersLayoutManager);
         familyMembersAdapter = new MembersAdapter();
         familyMembersRecyclerView.setAdapter(familyMembersAdapter);
-        //familyMembersAdapter.setData(membersList);
 
         ValueEventListener membersListener = new ValueEventListener() {
             @Override
@@ -82,8 +81,6 @@ public class FamilyActivity extends AppCompatActivity {
                 membersList = new ArrayList<>();
                 for (DataSnapshot memberSnapshot : dataSnapshot.getChildren()) {
                     Member member = memberSnapshot.getValue(Member.class);
-                    // String key=memberSnapshot.getKey();
-                    // member.setId(key);
                     membersList.add(member);
                 }
                 familyMembersAdapter.setData(membersList);
@@ -94,11 +91,10 @@ public class FamilyActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
                 Log.w("FamilyActivity", "loadMember:onCancelled", databaseError.toException());
-                // ...
             }
         };
-        myRef.addValueEventListener(membersListener);
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        familyMemberRef.addValueEventListener(membersListener);
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
@@ -181,9 +177,9 @@ public class FamilyActivity extends AppCompatActivity {
                 Member member = new Member();
                 member.setName(name.getText().toString());
                 member.setDOB(birthday.getText().toString());
-                String key = myRef.push().getKey();
+                String key = familyMemberRef.push().getKey();
                 member.setId(key);
-                myRef.child(key).setValue(member);
+                familyMemberRef.child(key).setValue(member);
                 dialog.dismiss();
 
             }
@@ -191,6 +187,6 @@ public class FamilyActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-//TODO: swipe to delete
+//TODO: fix the UI and do data validations
 
 }

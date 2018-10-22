@@ -102,7 +102,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
     public void removeContact(int position) {
-        DatabaseReference apptRef;
+        DatabaseReference contactsRef;
         FirebaseUser user;
         FirebaseAuth mFirebaseAuth;
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -112,8 +112,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
         }
         Contacts contact = contacts.get(position);
-        apptRef = database.getReference("users").child(user.getUid()).child("contact").child(contact.getId());
-        apptRef.removeValue();
+        contactsRef = database.getReference("users").child(user.getUid()).child("contacts").child(contact.getId());
+        contactsRef.removeValue();
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }

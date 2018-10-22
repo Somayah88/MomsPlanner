@@ -37,7 +37,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
     FloatingActionButton addContact;
     @BindView(R.id.contacts_recyclerView)
     RecyclerView contactsRecyclerView;
-    DatabaseReference myRef;
+    private DatabaseReference contactsRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
     private ContactsAdapter contactsAdapter;
@@ -55,7 +55,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
             database = FirebaseDatabase.getInstance();
 
         }
-        myRef = database.getReference("users").child(user.getUid()).child("contacts");
+        contactsRef = database.getReference("users").child(user.getUid()).child("contacts");
         addContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,28 +67,9 @@ public class ImportantContactsActivity extends AppCompatActivity {
         contactsRecyclerView.setLayoutManager(contactsLayoutManager);
         contactsAdapter = new ContactsAdapter();
         contactsRecyclerView.setAdapter(contactsAdapter);
-        contactsAdapter.setData(contactsList);
 
-        ValueEventListener contactsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                contactsList = new ArrayList<>();
-                for (DataSnapshot contactSnapshot : dataSnapshot.getChildren()) {
-                    Contacts contact = contactSnapshot.getValue(Contacts.class);
-                    contactsList.add(contact);
-                }
-                contactsAdapter.setData(contactsList);
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("ContactsActivity", "loadMember:onCancelled", databaseError.toException());
-            }
-        };
-        myRef.addValueEventListener(contactsListener);
-
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
@@ -111,6 +92,28 @@ public class ImportantContactsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ValueEventListener contactsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                contactsList = new ArrayList<>();
+                for (DataSnapshot contactSnapshot : dataSnapshot.getChildren()) {
+                    Contacts contact = contactSnapshot.getValue(Contacts.class);
+                    contactsList.add(contact);
+                }
+                contactsAdapter.setData(contactsList);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("ContactsActivity", "loadMember:onCancelled", databaseError.toException());
+            }
+        };
+        contactsRef.addValueEventListener(contactsListener);
+    }
 
     private void addContacts() {
         //TODO: validate data and put default for nt available data
@@ -147,9 +150,9 @@ public class ImportantContactsActivity extends AppCompatActivity {
                 contacts.setPhone(phone.getText().toString());
                 contacts.setEmailAddress(email.getText().toString());
                 contacts.setCity(city.getText().toString());
-                String key = myRef.push().getKey();
+                String key = contactsRef.push().getKey();
                 contacts.setId(key);
-                myRef.child(key).setValue(contacts);
+                contactsRef.child(key).setValue(contacts);
                 dialog.dismiss();
 
 
@@ -158,5 +161,5 @@ public class ImportantContactsActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-
+//TODO: solve the issue with the UI not being updated when new contacts is added
 }

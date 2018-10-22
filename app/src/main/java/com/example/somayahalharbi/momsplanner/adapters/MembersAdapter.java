@@ -79,7 +79,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
     }
 
     public void removeMember(int position) {
-        DatabaseReference apptRef;
+        DatabaseReference membersRef;
         FirebaseUser user;
         FirebaseAuth mFirebaseAuth;
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -89,8 +89,8 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
 
         }
         Member member = members.get(position);
-        apptRef = database.getReference("users").child(user.getUid()).child(MEMBER).child(member.getId());
-        apptRef.removeValue();
+        membersRef = database.getReference("users").child(user.getUid()).child(MEMBER).child(member.getId());
+        membersRef.removeValue();
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }
