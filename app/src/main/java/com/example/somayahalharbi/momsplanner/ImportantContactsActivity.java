@@ -62,7 +62,6 @@ public class ImportantContactsActivity extends AppCompatActivity {
                 addContacts();
             }
         });
-        contactsRecyclerView.setHasFixedSize(true);
         LinearLayoutManager contactsLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         contactsRecyclerView.setLayoutManager(contactsLayoutManager);
         contactsAdapter = new ContactsAdapter();

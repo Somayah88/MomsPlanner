@@ -9,6 +9,10 @@ public class ToDo implements Parcelable {
     private int priority; // should be 1, 2, 3: 1 is highest
     private boolean checked;
     private String dueBy;
+    private String ownerId;
+
+
+    private String taskId;
 
     public static final Parcelable.Creator<ToDo> CREATOR = new Parcelable.Creator<ToDo>() {
 
@@ -33,6 +37,8 @@ public class ToDo implements Parcelable {
         this.priority = in.readInt();
         this.checked = in.readByte() != 0;
         this.dueBy = in.readString();
+        this.ownerId = in.readString();
+        this.taskId = in.readString();
 
     }
 
@@ -48,6 +54,8 @@ public class ToDo implements Parcelable {
         dest.writeInt(priority);
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeString(dueBy);
+        dest.writeString(ownerId);
+        dest.writeString(taskId);
 
 
     }
@@ -92,6 +100,22 @@ public class ToDo implements Parcelable {
 
     public void setDueBy(String dueBy) {
         this.dueBy = dueBy;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
 

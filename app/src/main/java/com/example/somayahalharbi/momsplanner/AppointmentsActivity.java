@@ -90,7 +90,6 @@ public class AppointmentsActivity extends AppCompatActivity {
             }
         });
         getAllData();
-        //apptRecyclerView.setHasFixedSize(true);
         LinearLayoutManager appointmentLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         apptRecyclerView.setLayoutManager(appointmentLayoutManager);
         appointmentAdapter = new AppointmentsAdapter();
@@ -107,7 +106,6 @@ public class AppointmentsActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
-                    position = viewHolder.getAdapterPosition();
                     appointmentAdapter.remove(position);
 
                 }
@@ -417,7 +415,6 @@ public class AppointmentsActivity extends AppCompatActivity {
                 Log.w("addApptDialog", "Members list has " + members.size());
                 Log.w("addApptDialog", "Owners list has " + owners.size());
 
-                //TODO: change the main filter selection
                 resetMemberSpinner();
                 getAllData();
 

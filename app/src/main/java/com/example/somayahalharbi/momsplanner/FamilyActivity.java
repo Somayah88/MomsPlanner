@@ -69,7 +69,6 @@ public class FamilyActivity extends AppCompatActivity {
         });
 
 
-        familyMembersRecyclerView.setHasFixedSize(true);
         LinearLayoutManager membersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         familyMembersRecyclerView.setLayoutManager(membersLayoutManager);
         familyMembersAdapter = new MembersAdapter();

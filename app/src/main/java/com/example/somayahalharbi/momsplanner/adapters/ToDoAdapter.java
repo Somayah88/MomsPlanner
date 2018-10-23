@@ -8,20 +8,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.somayahalharbi.momsplanner.R;
 import com.example.somayahalharbi.momsplanner.models.ToDo;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.somayahalharbi.momsplanner.ToDoActivity.TO_DO_NODE;
+
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterViewHolder> {
     private ArrayList<ToDo> toDos = new ArrayList<ToDo>();
     private Context mContext;
+    private static FirebaseDatabase database;
+    DatabaseReference toDoRef;
+    FirebaseUser user;
+    FirebaseAuth mFirebaseAuth;
+
+
 
     public ToDoAdapter(Context context) {
         mContext = context;
@@ -35,11 +51,43 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
         int layoutFromListItem = R.layout.task_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(layoutFromListItem, viewGroup, false);
+
         return new ToDoAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ToDoAdapterViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ToDoAdapterViewHolder viewHolder, final int position) {
+
+        viewHolder.toDoTask.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, final boolean isChecked) {
+                mFirebaseAuth = FirebaseAuth.getInstance();
+                user = mFirebaseAuth.getCurrentUser();
+                if (database == null) {
+                    database = FirebaseDatabase.getInstance();
+
+                }
+                toDoRef = database.getReference("users").child(user.getUid()).child(TO_DO_NODE).child(toDos.get(position).getTaskId()).child("checked");
+                toDoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dataSnapshot.getRef().setValue(isChecked);
+                        toDos.get(position).setChecked(isChecked);
+                        notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+
+
+                });
+
+            }
+        });
+
         String task = toDos.get(position).getToDo();
         String dueBy = toDos.get(position).getDueBy();
         String owner = toDos.get(position).getOwner();
@@ -81,6 +129,24 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
 
     }
 
+    public void remove(int position) {
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        user = mFirebaseAuth.getCurrentUser();
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+
+        }
+        ToDo todo = toDos.get(position);
+        toDoRef = database.getReference("users").child(user.getUid()).child(TO_DO_NODE).child(todo.getTaskId());
+        toDoRef.removeValue();
+
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+
+
+    }
+
     public class ToDoAdapterViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.task_title)
         CheckBox toDoTask;
@@ -95,6 +161,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
         public ToDoAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
         }
     }
+
 }

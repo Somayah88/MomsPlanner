@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -54,6 +56,12 @@ public class ToDoActivity extends AppCompatActivity {
     private ToDoAdapter toDoAdapter;
     // Firebase database
     private ArrayList<ToDo> toDoList = new ArrayList<>();
+    ArrayList<Member> members;
+    ArrayList<String> owners;
+    private int mPosition;
+    private ArrayList<String> spinnerMembers;
+    private int filterSelection;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +73,9 @@ public class ToDoActivity extends AppCompatActivity {
         user = mFirebaseAuth.getCurrentUser();
         if (database == null) {
             database = FirebaseDatabase.getInstance();
-            //    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
         }
         toDoRef = database.getReference("users").child(user.getUid()).child(TO_DO_NODE);
-
-        ownersRef = database.getReference("users").child(user.getUid()).child("member");
+        getMembers();
 
 
         addToDo.setOnClickListener(new View.OnClickListener() {
@@ -79,60 +84,42 @@ public class ToDoActivity extends AppCompatActivity {
                 addTask();
             }
         });
-        toDoRecyclerView.setHasFixedSize(true);
+        getAllData();
+
         LinearLayoutManager toDoLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         toDoRecyclerView.setLayoutManager(toDoLinearLayoutManager);
         toDoAdapter = new ToDoAdapter(this);
         toDoRecyclerView.setAdapter(toDoAdapter);
-        ValueEventListener toDoListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                toDoList = new ArrayList<>();
-                for (DataSnapshot todoSnapshot : dataSnapshot.getChildren()) {
-                    ToDo todo = todoSnapshot.getValue(ToDo.class);
-                    toDoList.add(todo);
-                }
-                toDoAdapter.setData(toDoList);
 
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("ToDoActivity", "loadTodo:onCancelled", databaseError.toException());
-                // ...
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (direction == ItemTouchHelper.LEFT) {
+                    toDoAdapter.remove(position);
+
+                }
+
             }
         };
-        toDoRef.addValueEventListener(toDoListener);
-        //#########################################################
-
-
-        //String[] owners = {"Faisal", "Somayah", "Sarah"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
-        memberSpinner.setAdapter(adapter);
-        memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO: implement this to get owner specific todo (Sort By Owner)
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(toDoRecyclerView);
 
     }
 
-    private ArrayList<String> getMembers() {
+    private void getMembers() {
 
-        final ArrayList<String> owners = new ArrayList<>();
-        final ArrayList<Member> members = new ArrayList<>();
+        ownersRef = database.getReference("users").child(user.getUid()).child("member");
+
+
+        owners = new ArrayList<>();
+        members = new ArrayList<>();
 
         ownersRef.addValueEventListener(new ValueEventListener() {
 
@@ -145,49 +132,131 @@ public class ToDoActivity extends AppCompatActivity {
                     String owner = member.getName();
                     owners.add(owner);
                 }
+                Log.w("getMembers", "Members list has " + members.size());
+                Log.w("getMembers", "Owners list has " + owners.size());
+                owners.add("No Owner");
+                createFilterSpinner();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("AppointmentActivity", "loadAppointments:onCancelled", databaseError.toException());
+
+
+            }
+        });
+    }
+
+    private void createFilterSpinner() {
+        spinnerMembers = new ArrayList<>();
+        spinnerMembers.addAll(owners);
+        spinnerMembers.remove(owners.size() - 1);
+        spinnerMembers.add("All");
+
+
+        ArrayAdapter<String> membersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerMembers);
+        membersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // final Spinner memberSpinner=findViewById(R.id.appt_member_spinner);
+        Log.w("create list", "Members list has " + members.size());
+        Log.w("create list", "Owners list has " + owners.size());
+        memberSpinner.setAdapter(membersAdapter);
+        memberSpinner.setSelection(spinnerMembers.size() - 1);
+
+
+        memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.w("Filter Selected", "position is " + i);
+                filterSelection = i;
+                getData(i);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        membersAdapter.notifyDataSetChanged();
+
+
+    }
+
+    private void resetMemberSpinner() {
+        memberSpinner.setSelection(spinnerMembers.size() - 1);
+        filterSelection = spinnerMembers.size() - 1;
+
+    }
+
+    private void getData(int position) {
+        if (position < owners.size() - 1)
+            getFilteredData(position);
+
+        else
+            getAllData();
+    }
+
+    private void getFilteredData(int position) {
+
+        Log.w("getFilkteredData", "Members list has " + members.size());
+        Log.w("getFilteredDatas", "Owners list has " + owners.size());
+
+        Query queryRef = toDoRef.orderByChild("ownerId").equalTo(members.get(position).getId());
+        queryRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                toDoList = new ArrayList<>();
+                for (DataSnapshot tasksSnapshot : dataSnapshot.getChildren()) {
+                    ToDo todo = tasksSnapshot.getValue(ToDo.class);
+                    toDoList.add(todo);
+
+                }
+
+                toDoAdapter.setData(toDoList);
 
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("FamilyActivity", "loadMember:onCancelled", databaseError.toException());
+
+            }
+        });
+        Log.w("GetFilteredData", "Get Filtered data was just executed");
+
+
+    }
+
+    private void getAllData() {
+
+        toDoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                toDoList = new ArrayList<>();
+                for (DataSnapshot taskSnapshot : dataSnapshot.getChildren()) {
+                    ToDo todo = taskSnapshot.getValue(ToDo.class);
+                    toDoList.add(todo);
+
+
+                }
+                Log.w("GetAllData", "Get All data was just executed and selected position is " + filterSelection);
+
+                toDoAdapter.setData(toDoList);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("AppointmentActivity", "loadAppointments:onCancelled", databaseError.toException());
 
 
             }
         });
-        return owners;
-
-
     }
 
-    private void setDummyData() {
-        ToDo todo = new ToDo();
-        todo.setToDo("Book Place For Faisal's Birthday Party");
-        todo.setDueBy("10/13/2018");
-        todo.setChecked(false);
-        todo.setPriority(1);
-        todo.setOwner("Faisal");
-        toDoList.add(todo);
 
-
-        todo = new ToDo();
-        todo.setToDo("Email the teacher to ask about the school's birthday celebration");
-        todo.setDueBy("11/10/2018");
-        todo.setChecked(false);
-        todo.setPriority(3);
-        todo.setOwner("Faisal");
-        toDoList.add(todo);
-        // myRef.setValue(todo);
-
-        todo = new ToDo();
-        todo.setToDo("Buy new clothes for fall and winter");
-        todo.setDueBy("11/15/2018");
-        todo.setChecked(false);
-        todo.setPriority(2);
-        todo.setOwner("Everyone");
-        toDoList.add(todo);
-    }
 
     private void addTask() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -201,18 +270,14 @@ public class ToDoActivity extends AppCompatActivity {
         final Button cancelButton = dialogView.findViewById(R.id.cancel_btn);
         final EditText dueBy = dialogView.findViewById(R.id.to_do_due_by);
         final RadioGroup priorityRadioGroup = dialogView.findViewById(R.id.task_priority);
-
-
-        //String[] owners = {"Faisal", "Somayah", "Sarah"};
-
-
         final Spinner ownersSpinner = dialogView.findViewById(R.id.todo_owner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getMembers());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
         ownersSpinner.setAdapter(adapter);
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mPosition = i;
 
 
             }
@@ -278,7 +343,20 @@ public class ToDoActivity extends AppCompatActivity {
                     priority = 1;
                 todo.setPriority(priority);
                 todo.setDueBy(dueBy.getText().toString());
-                toDoRef.push().setValue(todo);
+                if (mPosition < owners.size() - 1) {
+                    todo.setOwner(members.get(mPosition).getName());
+                    todo.setOwnerId(members.get(mPosition).getId());
+                } else {
+                    todo.setOwner("No Owner");
+                    todo.setOwnerId("0");
+
+                }
+                String key = toDoRef.push().getKey();
+                todo.setTaskId(key);
+                toDoRef.child(key).setValue(todo);
+                resetMemberSpinner();
+                getAllData();
+
                 dialog.dismiss();
 
             }
@@ -286,9 +364,5 @@ public class ToDoActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-//TODO: add filtering functionality
-    //TODO: add swipe to delete
-    //TODO: update item when checked
-
 
 }
