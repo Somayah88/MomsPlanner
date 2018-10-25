@@ -160,5 +160,6 @@ public class ImportantContactsActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-//TODO: solve the issue with the UI not being updated when new contacts is added
 }
+//TODO: display error messages as needed
+//TODO: fix the UI and do data validation

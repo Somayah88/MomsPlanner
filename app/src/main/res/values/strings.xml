@@ -22,7 +22,7 @@
 
     <string name="task_default">Task</string>
     <string name="priority_default">Low</string>
-    <string name="due_by_default">NA</string>
+    <string name="due_by_default"> N/A </string>
     <string name="owner_default">No Owner</string>
     <string name="title_activity_login">Log in</string>
 
@@ -95,8 +95,9 @@
     <string name="member_dob_default">NA</string>
 
     <!-- Members Menu-->
-    <string name="member1">Faisal </string>
-    <string name="member2">Sarah</string>
+
+    <string name="appwidget_text">To Do List</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>

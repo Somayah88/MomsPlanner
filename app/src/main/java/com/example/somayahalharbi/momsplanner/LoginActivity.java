@@ -1,37 +1,17 @@
 package com.example.somayahalharbi.momsplanner;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,21 +19,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
 
 // Login tutorial: https://www.androidlearning.com/android-login-registration-firebase-authentication/
-    //TODO: Sign out
-    //TODO: Password Reset
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_email)
     EditText mLoginEmail;
@@ -144,10 +117,10 @@ public class LoginActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.password_reset, null);
         dialogBuilder.setView(dialogView);
        // ButterKnife.bind(this, dialogView);
-        final EditText editEmail = (EditText) dialogView.findViewById(R.id.email);
-        final Button resetButton = (Button) dialogView.findViewById(R.id.reset_password_button);
-        final ProgressBar progressBar = (ProgressBar) dialogView.findViewById(R.id.progressBar);
-        final Button backButton=(Button) dialogView.findViewById(R.id.btn_back);
+        final EditText editEmail = dialogView.findViewById(R.id.email);
+        final Button resetButton = dialogView.findViewById(R.id.reset_password_button);
+        final ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
+        final Button backButton = dialogView.findViewById(R.id.btn_back);
 
 
 

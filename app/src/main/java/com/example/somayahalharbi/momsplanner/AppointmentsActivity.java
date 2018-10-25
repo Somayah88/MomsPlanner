@@ -426,6 +426,9 @@ public class AppointmentsActivity extends AppCompatActivity {
         dialog.show();
     }
     //TODO: edit if time permits
+    //TODO: display error messages as needed
+    //TODO: fix the UI and do data validations
+
 
 
 

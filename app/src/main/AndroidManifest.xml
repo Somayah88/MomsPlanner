@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.somayahalharbi.momsplanner">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -11,8 +10,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
-        android:allowBackup="true"
         android:name=".FirebaseHandler"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -39,9 +38,11 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <!--meta-data
+        <!--
+            meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" /-->
+            android:value="@string/google_maps_key" /
+        -->
 
         <activity
             android:name=".LoginActivity"
@@ -58,6 +59,19 @@
         <activity
             android:name=".ToDoActivity"
             android:label="@string/title_activity_to_do" />
+
+        <receiver android:name=".widget.MomsPlannerWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/moms_planner_widget_info" />
+        </receiver>
+        <service
+            android:name=".widget.MomsPlannerRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

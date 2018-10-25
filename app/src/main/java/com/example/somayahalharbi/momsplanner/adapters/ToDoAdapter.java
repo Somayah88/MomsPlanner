@@ -98,15 +98,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
         viewHolder.taskOwner.setText(owner);
         viewHolder.toDoTask.setChecked(checked);
         if (priority == 1) {
-            viewHolder.taskPriority.setText("High");
-            viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.high));
+            viewHolder.taskPriority.setText("Low");
+            viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.low));
 
         } else if (priority == 2) {
             viewHolder.taskPriority.setText("Medium");
             viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.medium));
-        } else {
-            viewHolder.taskPriority.setText("Low");
-            viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.low));
+        } else if (priority == 3) {
+            viewHolder.taskPriority.setText("High");
+            viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.high));
         }
     }
 

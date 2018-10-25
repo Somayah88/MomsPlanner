@@ -40,14 +40,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+
         final Context context=this;
 
         mFirebaseauth=FirebaseAuth.getInstance();
@@ -94,22 +87,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent appointmentsIntent=new Intent(context,AppointmentsActivity.class);
                 startActivity(appointmentsIntent);
 
-
-            }
-        });
-        /*
-        Button crashButton = new Button(this);
-        crashButton.setText("Crash!");
-        crashButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Crashlytics.getInstance().crash(); // Force a crash
             }
         });
 
-        addContentView(crashButton, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-                */
     }
 
     @Override
@@ -121,12 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.sign_out) {
             signOut();
             return true;
@@ -153,3 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+//TODO: Add Firebase JobDispatcher
+//TODO: save the app state when the device configuration changes
+//TODO: add app widget to display the to do items

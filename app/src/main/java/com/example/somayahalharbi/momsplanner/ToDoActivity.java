@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import com.example.somayahalharbi.momsplanner.adapters.ToDoAdapter;
 import com.example.somayahalharbi.momsplanner.models.Member;
 import com.example.somayahalharbi.momsplanner.models.ToDo;
+import com.example.somayahalharbi.momsplanner.widget.MomsPlannerWidgetProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -103,6 +104,7 @@ public class ToDoActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     toDoAdapter.remove(position);
+                    updateWidgetData();
 
                 }
 
@@ -238,12 +240,13 @@ public class ToDoActivity extends AppCompatActivity {
                 for (DataSnapshot taskSnapshot : dataSnapshot.getChildren()) {
                     ToDo todo = taskSnapshot.getValue(ToDo.class);
                     toDoList.add(todo);
-
-
                 }
                 Log.w("GetAllData", "Get All data was just executed and selected position is " + filterSelection);
 
                 toDoAdapter.setData(toDoList);
+                updateWidgetData();
+
+
 
             }
 
@@ -273,6 +276,7 @@ public class ToDoActivity extends AppCompatActivity {
         final Spinner ownersSpinner = dialogView.findViewById(R.id.todo_owner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
         ownersSpinner.setAdapter(adapter);
+        ownersSpinner.setSelection(owners.size() - 1);
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -341,6 +345,7 @@ public class ToDoActivity extends AppCompatActivity {
                     priority = 2;
                 if (priorityId == R.id.low_priority)
                     priority = 1;
+                Log.d("Priority", Integer.toString(priority));
                 todo.setPriority(priority);
                 todo.setDueBy(dueBy.getText().toString());
                 if (mPosition < owners.size() - 1) {
@@ -365,4 +370,16 @@ public class ToDoActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void updateWidgetData() {
+        Log.w("to do activity", "update widget data is just called");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                MomsPlannerWidgetProvider.sendRefreshBroadcast(ToDoActivity.this);
+            }
+        });
+    }
+
 }
+//TODO: display error messages as needed
+//TODO: fix the UI and add data validations

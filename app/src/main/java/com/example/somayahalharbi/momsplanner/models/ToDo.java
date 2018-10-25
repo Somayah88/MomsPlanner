@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class ToDo implements Parcelable {
     private String toDo;
     private String owner;
-    private int priority; // should be 1, 2, 3: 1 is highest
+    private int priority; // should be 1, 2, 3: 3 is highest
     private boolean checked;
     private String dueBy;
     private String ownerId;

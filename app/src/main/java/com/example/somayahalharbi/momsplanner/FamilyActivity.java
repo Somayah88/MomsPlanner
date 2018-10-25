@@ -132,7 +132,6 @@ public class FamilyActivity extends AppCompatActivity {
         final EditText birthday = dialogView.findViewById(R.id.member_dob);
 
         final Calendar myCalendar = Calendar.getInstance();
-        //TODO: easier date picker
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -187,5 +186,6 @@ public class FamilyActivity extends AppCompatActivity {
         dialog.show();
     }
 //TODO: fix the UI and do data validations
+    //TODO: display error messages as needed
 
 }
