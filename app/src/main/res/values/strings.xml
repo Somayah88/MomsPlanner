@@ -26,6 +26,12 @@
     <string name="owner_default">No Owner</string>
     <string name="title_activity_login">Log in</string>
 
+    <!--Strings related to Appointment Activity-->
+
+    <string name="appointment_location_title">Location: </string>
+    <string name="appointment_date_title">Date: </string>
+    <string name="appointment_time_title">Time: </string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password </string>
@@ -94,10 +100,17 @@
     <string name="member_name_default">Member Name</string>
     <string name="member_dob_default">NA</string>
 
-    <!-- Members Menu-->
 
     <string name="appwidget_text">To Do List</string>
     <string name="add_widget">Add widget</string>
+<!-- Notifications Strings-->
+
+    <string name="to_do_channel_name">To Do Channel</string>
+    <string name="appointment_channel_name">Appointments Channel</string>
+    <string name="appointment_notification_title">Upcoming Appointments</string>
+    <string name="overdue_tasks_notification_title">Overdue Tasks </string>
+    <string name="appointments_notifications_content">You have %1$d upcoming appointment/s</string>
+    <string name="overdue_tasks_notifications_content">You have %1$d Overdue task/s</string>
 
 
 </resources>

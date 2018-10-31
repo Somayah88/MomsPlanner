@@ -24,6 +24,13 @@ import android.widget.TimePicker;
 import com.example.somayahalharbi.momsplanner.adapters.AppointmentsAdapter;
 import com.example.somayahalharbi.momsplanner.models.Appointment;
 import com.example.somayahalharbi.momsplanner.models.Member;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +39,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +50,7 @@ import butterknife.ButterKnife;
 
 public class AppointmentsActivity extends AppCompatActivity {
     public static final String APPOINTMENT_PATH = "appointment";
+
     private static FirebaseDatabase database;
     @BindView(R.id.fab)
     FloatingActionButton addAppointmentFab;
@@ -116,6 +123,9 @@ public class AppointmentsActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(apptRecyclerView);
 
         // CAN BE SEPARATE METHOD
+
+
+
 
 
     }
@@ -288,21 +298,25 @@ public class AppointmentsActivity extends AppCompatActivity {
 
 
 
-        ArrayAdapter<String> ownersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, owners);
-        final MaterialBetterSpinner ownersSpinner = dialogView.findViewById(R.id.appt_owner);
-        ownersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-
-        ownersSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final Spinner ownersSpinner = dialogView.findViewById(R.id.appt_owner);
+        ArrayAdapter<String> ownersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
+        ownersSpinner.setAdapter(ownersAdapter);
+        ownersSpinner.setSelection(owners.size() - 1);
+        ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mPosition = i;
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-        ownersSpinner.setAdapter(ownersAdapter);
-        ownersAdapter.notifyDataSetChanged();
+
 
 
         //TODO: extract this part to reuse it between all activities.
@@ -392,6 +406,7 @@ public class AppointmentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO: add data validation & default values
+                //TODO: when no owner selected the default will be the first item in the list
 
                 Appointment appt = new Appointment();
                 appt.setApptTitle(apptTitle.getText().toString());

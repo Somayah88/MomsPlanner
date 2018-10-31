@@ -53,7 +53,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             fullAdress = contactAddress + " " + contactsUnit + ", " + contactCity + ", " + contactState + " " + contactZipCode;
 
         } else {
-            //TODO: do something here
+
 
             fullAdress = contactAddress + ", " + contactCity + ", " + contactState + " " + contactZipCode;
 

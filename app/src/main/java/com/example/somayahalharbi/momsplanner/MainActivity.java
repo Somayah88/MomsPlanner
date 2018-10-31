@@ -11,11 +11,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.somayahalharbi.momsplanner.helpers.WidgetUpdateHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.somayahalharbi.momsplanner.helpers.ServiceSchedulingHelper.scheduleAppointmentReminderService;
+import static com.example.somayahalharbi.momsplanner.helpers.ServiceSchedulingHelper.scheduleOverdueTaskNotificationService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        scheduleAppointmentReminderService(this);
+       // scheduleOverdueTaskNotificationService(this);
+        //TODO:  uncomment this
+        WidgetUpdateHelper.updateWidgetData(MainActivity.this);
+        //TODO: this doesn't work , Why??
+
 
     }
 
@@ -131,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-//TODO: Add Firebase JobDispatcher
+//TODO: Firebase jobDispatcher not working
 //TODO: save the app state when the device configuration changes
 //TODO: add app widget to display the to do items
+//TODO: unregister listeners.

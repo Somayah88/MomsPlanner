@@ -16,9 +16,8 @@ import com.example.somayahalharbi.momsplanner.ToDoActivity;
  * Implementation of App Widget functionality.
  */
 //TODO: more testing to make sure it behaves well
-//TODO: Change the preview
-//TODO: change the style
-    
+    //TODO: change the prevew
+
 public class MomsPlannerWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -31,7 +30,7 @@ public class MomsPlannerWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_title, widgetText);
         Intent toDoIntent = new Intent(context, ToDoActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, toDoIntent, 0);
-        views.setOnClickPendingIntent(R.id.appwidget_title, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_linear_layout, pendingIntent);
         Intent intent = new Intent(context, MomsPlannerRemoteViewService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         views.setRemoteAdapter(R.id.widget_list_view, intent);

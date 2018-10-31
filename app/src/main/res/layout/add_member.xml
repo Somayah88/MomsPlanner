@@ -2,7 +2,9 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
 
     <EditText
         android:id="@+id/member_name"
@@ -44,14 +46,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
         android:text="@string/add_button"
         android:textAllCaps="false"
         app:layout_constraintEnd_toStartOf="@+id/cancel_member_button"
-        app:layout_constraintHorizontal_bias="0.642"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/member_dob" />
 
@@ -59,9 +58,8 @@
         android:id="@+id/cancel_member_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginEnd="68dp"
+        android:layout_marginTop="28dp"
         android:text="@string/cancel_button"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"

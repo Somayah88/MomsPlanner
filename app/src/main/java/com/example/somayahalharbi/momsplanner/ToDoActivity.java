@@ -21,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.example.somayahalharbi.momsplanner.adapters.ToDoAdapter;
+import com.example.somayahalharbi.momsplanner.helpers.WidgetUpdateHelper;
 import com.example.somayahalharbi.momsplanner.models.Member;
 import com.example.somayahalharbi.momsplanner.models.ToDo;
 import com.example.somayahalharbi.momsplanner.widget.MomsPlannerWidgetProvider;
@@ -104,7 +105,7 @@ public class ToDoActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     toDoAdapter.remove(position);
-                    updateWidgetData();
+                   WidgetUpdateHelper.updateWidgetData(ToDoActivity.this);
 
                 }
 
@@ -244,8 +245,7 @@ public class ToDoActivity extends AppCompatActivity {
                 Log.w("GetAllData", "Get All data was just executed and selected position is " + filterSelection);
 
                 toDoAdapter.setData(toDoList);
-                updateWidgetData();
-
+                WidgetUpdateHelper.updateWidgetData(ToDoActivity.this);
 
 
             }
@@ -273,6 +273,7 @@ public class ToDoActivity extends AppCompatActivity {
         final Button cancelButton = dialogView.findViewById(R.id.cancel_btn);
         final EditText dueBy = dialogView.findViewById(R.id.to_do_due_by);
         final RadioGroup priorityRadioGroup = dialogView.findViewById(R.id.task_priority);
+
         final Spinner ownersSpinner = dialogView.findViewById(R.id.todo_owner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
         ownersSpinner.setAdapter(adapter);
@@ -302,7 +303,7 @@ public class ToDoActivity extends AppCompatActivity {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "MM/dd/yy"; //In which you need put here
+                String myFormat = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
                 dueBy.setText(sdf.format(myCalendar.getTime()));
@@ -370,7 +371,7 @@ public class ToDoActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void updateWidgetData() {
+   /* public void updateWidgetData() {
         Log.w("to do activity", "update widget data is just called");
         runOnUiThread(new Runnable() {
             @Override
@@ -378,7 +379,7 @@ public class ToDoActivity extends AppCompatActivity {
                 MomsPlannerWidgetProvider.sendRefreshBroadcast(ToDoActivity.this);
             }
         });
-    }
+    }*/
 
 }
 //TODO: display error messages as needed

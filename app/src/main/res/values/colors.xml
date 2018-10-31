@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4a148c</color>
-    <color name="colorPrimaryDark">#12005e</color>
-    <color name="colorPrimaryLight">#7c43bd</color>
-    <color name="colorAccent">#ffc400</color>
+    <color name="colorPrimary">#AD1457</color>
+    <color name="colorPrimaryDark">#880E4F</color>
+    <color name="colorPrimaryLight">#FCE4EC</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="white">#ffff</color>
 
     <!-- priority colors-->
     <color name="high">#c62828</color>
     <color name="low">#1976d2</color>
     <color name="medium">#2e7d32</color>
+
+    <!-- text colors-->
+    <color name="titlesColor">#880E4F</color>
+    <color name="secondaryTitleColor">#616161</color>
+    <color name="textColor">#424242</color>
 </resources>

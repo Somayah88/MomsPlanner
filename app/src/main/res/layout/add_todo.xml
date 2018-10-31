@@ -34,21 +34,35 @@
         android:inputType="none"
         android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/task" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/priority_linear_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/to_do_due_by"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+
+        >
+
+    <TextView
+        android:id="@+id/radio_group_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/priority_title"
+       />
 
     <RadioGroup
         android:id="@+id/task_priority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:paddingTop="8dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/to_do_due_by">
+        >
 
         <RadioButton
             android:id="@+id/high_priority"
@@ -72,21 +86,37 @@
             android:text="@string/low_priority"
             android:textColor="@color/low" />
     </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/priority_linear_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:padding="8dp"
+        android:id="@+id/spinner_linear_layout"
+
+        >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_title"
+        android:text="@string/owner_title"
+       />
 
     <Spinner
         android:id="@+id/todo_owner"
-        android:layout_marginLeft="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:gravity="center"
+        android:layout_marginStart="8dp"
         android:prompt="@string/spinner_owner_prompt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/task_priority"
-        app:layout_constraintTop_toBottomOf="@+id/to_do_due_by">
+        >
 
     </Spinner>
-
+    </LinearLayout>
     <Button
         android:id="@+id/add_to_do"
         android:layout_width="wrap_content"
@@ -95,12 +125,12 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="32dp"
+        android:textAllCaps="false"
         android:text="@string/add_button"
         app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
-        app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_priority" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_linear_layout" />
 
     <Button
         android:id="@+id/cancel_btn"
@@ -108,10 +138,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="44dp"
         android:layout_marginRight="44dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="32dp"
         android:text="@string/cancel_button"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_priority" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_linear_layout" />
 
 
 </android.support.constraint.ConstraintLayout>
