@@ -70,7 +70,28 @@ public class AppointmentsActivity extends AppCompatActivity {
     private ArrayList<Appointment> appointmentList;
     private int mPosition;
     private ArrayList<String> spinnerMembers;
-    private int filterSelection;
+    private int filterSelection=-1;
+    //------------------ Dialog save status-----------
+    private boolean dialogShown;
+    private static final String DIALOG_STATUES="dialog_status";
+    private static final String APPOINTMENT_TITLE_TEXT="appointment_text";
+    private static final String LOCATION_TEXT="location_text";
+    private static final String APPT_DATE_TEX="appt_date_text";
+    private static final String APPT_TIME_TEXT="appt_time_text";
+    //---------------- UI save status-----------------
+    private static final String FILTER_SELECTION="filter_selection";
+    private static final String APPOINTMENTS_LIST="appt_list";
+    private static final String MEMBERS_LIST="members_list";
+    private static final String OWNERS_LIST="owners_list";
+    //-------------- Dialog Views -----------
+    private AlertDialog dialog;
+    private EditText apptTitle;
+    private Button addButton ;
+    private Button cancelButton ;
+    private EditText apptLocation ;
+    private EditText apptDate ;
+    private EditText apptTime ;
+    private Spinner ownersSpinner;
 
 
     @Override
@@ -79,15 +100,12 @@ public class AppointmentsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_appointments);
         ButterKnife.bind(this);
         Log.v("Appointment Activity", "On  create called");
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         user = mFirebaseAuth.getCurrentUser();
         if (database == null) {
             database = FirebaseDatabase.getInstance();
         }
-
-        getMembers();
-
+        apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH);
 
 
         addAppointmentFab.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +114,8 @@ public class AppointmentsActivity extends AppCompatActivity {
                 addAppointment();
             }
         });
-        getAllData();
+
+
         LinearLayoutManager appointmentLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         apptRecyclerView.setLayoutManager(appointmentLayoutManager);
         appointmentAdapter = new AppointmentsAdapter();
@@ -122,9 +141,24 @@ public class AppointmentsActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(apptRecyclerView);
 
-        // CAN BE SEPARATE METHOD
 
 
+        if(savedInstanceState!=null && savedInstanceState.containsKey(APPOINTMENTS_LIST))
+        {
+                filterSelection=savedInstanceState.getInt(FILTER_SELECTION);
+                appointmentList=savedInstanceState.getParcelableArrayList(APPOINTMENTS_LIST);
+                members=savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
+                owners=savedInstanceState.getStringArrayList(OWNERS_LIST);
+               appointmentAdapter.setData(appointmentList);
+               createFilterSpinner();
+
+        }
+        else {
+
+            getMembers();
+            getAllData();
+
+        }
 
 
 
@@ -133,7 +167,6 @@ public class AppointmentsActivity extends AppCompatActivity {
 
     private void getAllData() {
 
-        apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH);
         apptRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -180,7 +213,10 @@ public class AppointmentsActivity extends AppCompatActivity {
         Log.w("create list", "Members list has " + members.size());
         Log.w("create list", "Owners list has " + owners.size());
         memberSpinner.setAdapter(membersAdapter);
+        if(filterSelection==-1)
         memberSpinner.setSelection(spinnerMembers.size() - 1);
+        else
+            memberSpinner.setSelection(filterSelection);
 
 
 
@@ -288,20 +324,21 @@ public class AppointmentsActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
         // ButterKnife.bind(this, dialogView);
         //TODO: replace this with Butterknife
-        final EditText apptTitle = dialogView.findViewById(R.id.appt_title);
-        final Button addButton = dialogView.findViewById(R.id.add_appt_button);
-        final Button cancelButton = dialogView.findViewById(R.id.cancel_appt_button);
-        final EditText apptLocation = dialogView.findViewById(R.id.appt_location);
-        final EditText apptDate = dialogView.findViewById(R.id.appt_date);
-        final EditText apptTime = dialogView.findViewById(R.id.appt_time);
+         apptTitle = dialogView.findViewById(R.id.appt_title);
+         addButton = dialogView.findViewById(R.id.add_appt_button);
+         cancelButton = dialogView.findViewById(R.id.cancel_appt_button);
+         apptLocation = dialogView.findViewById(R.id.appt_location);
+         apptDate = dialogView.findViewById(R.id.appt_date);
+         apptTime = dialogView.findViewById(R.id.appt_time);
 
 
 
 
-        final Spinner ownersSpinner = dialogView.findViewById(R.id.appt_owner);
+        ownersSpinner = dialogView.findViewById(R.id.appt_owner);
         ArrayAdapter<String> ownersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
         ownersSpinner.setAdapter(ownersAdapter);
         ownersSpinner.setSelection(owners.size() - 1);
+        //ToDo: spinner with rotation doesn't allow selection and pick the first member only
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -380,7 +417,7 @@ public class AppointmentsActivity extends AppCompatActivity {
                apptTime.setText(formated_time);
                */
                 apptTime.setText(hour_12_format + ":" + minutes + " " + AM_PM);
-                //TODO: make time format 00:00
+                //TODO: make time format 00:00 and put string in string.xml
 
 
             }
@@ -395,7 +432,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         });
 
 
-        final AlertDialog dialog = dialogBuilder.create();
+       dialog = dialogBuilder.create();
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -406,7 +443,6 @@ public class AppointmentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO: add data validation & default values
-                //TODO: when no owner selected the default will be the first item in the list
 
                 Appointment appt = new Appointment();
                 appt.setApptTitle(apptTitle.getText().toString());
@@ -440,11 +476,71 @@ public class AppointmentsActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-    //TODO: edit if time permits
     //TODO: display error messages as needed
     //TODO: fix the UI and do data validations
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(dialog!=null && dialog.isShowing())
+            dialogShown=true;
+        else
+            dialogShown=false;
 
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //------------ Save UI status------------------------------
+        outState.putBoolean(DIALOG_STATUES, dialogShown);
+        outState.putInt(FILTER_SELECTION,memberSpinner.getSelectedItemPosition());
+        outState.putParcelableArrayList(APPOINTMENTS_LIST, appointmentList);
+        outState.putParcelableArrayList(MEMBERS_LIST,members);
+        outState.putStringArrayList(OWNERS_LIST, owners);
+
+        //-------------Save Dialog Status------------------------
+        if(dialogShown){
+            if(!apptTitle.getText().toString().isEmpty())
+                outState.putString(APPOINTMENT_TITLE_TEXT, apptTitle.getText().toString());
+            if(!apptLocation.getText().toString().isEmpty())
+                outState.putString(LOCATION_TEXT, apptLocation.getText().toString());
+            if(!apptTime.getText().toString().isEmpty())
+                outState.putString(APPT_TIME_TEXT, apptTime.getText().toString());
+            if(!apptDate.getText().toString().isEmpty())
+                outState.putString(APPT_DATE_TEX, apptDate.getText().toString());
+
+
+
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+
+
+        if(savedInstanceState.getBoolean(DIALOG_STATUES)){
+            addAppointment();
+            if(savedInstanceState.containsKey(APPOINTMENT_TITLE_TEXT)){
+                String apptTitleText=savedInstanceState.getString(APPOINTMENT_TITLE_TEXT);
+                apptTitle.setText(apptTitleText);
+            }
+            if(savedInstanceState.containsKey(APPT_DATE_TEX)){
+                String dateText=savedInstanceState.getString(APPT_DATE_TEX);
+                apptDate.setText(dateText);
+            }
+            if(savedInstanceState.containsKey(APPT_TIME_TEXT)){
+                String timeText=savedInstanceState.getString(APPT_TIME_TEXT);
+                apptTime.setText(timeText);
+            }
+            if(savedInstanceState.containsKey(LOCATION_TEXT)){
+                String apptLocationText=savedInstanceState.getString(LOCATION_TEXT);
+                apptLocation.setText(apptLocationText);
+            }
+
+        }
+    }
 
 
 }

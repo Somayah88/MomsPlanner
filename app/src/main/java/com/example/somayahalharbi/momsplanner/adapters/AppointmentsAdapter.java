@@ -85,18 +85,6 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         Appointment appt = appointments.get(position);
         apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH).child(appt.getApptId());
         apptRef.removeValue();
-
-       /* apptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dataSnapshot.getRef().removeValue();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
         notifyItemRemoved(position);
         notifyDataSetChanged();
 

@@ -47,22 +47,22 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         String contactZipCode = contacts.get(position).getZipCode();
         String contactsUnit = contacts.get(position).getUnit();
 
-        String fullAdress;
+        String fullAddress;
         if (!contactsUnit.equals("null")) {
 
-            fullAdress = contactAddress + " " + contactsUnit + ", " + contactCity + ", " + contactState + " " + contactZipCode;
+            fullAddress = contactAddress + " " + contactsUnit + ", " + contactCity + ", " + contactState + " " + contactZipCode;
 
         } else {
 
 
-            fullAdress = contactAddress + ", " + contactCity + ", " + contactState + " " + contactZipCode;
+            fullAddress = contactAddress + ", " + contactCity + ", " + contactState + " " + contactZipCode;
 
         }
 
         viewHolder.contactTitle.setText(title);
         viewHolder.contactEmail.setText(email);
         viewHolder.contactPhoneNo.setText(phone);
-        viewHolder.address.setText(fullAdress);
+        viewHolder.address.setText(fullAddress);
 
 
     }

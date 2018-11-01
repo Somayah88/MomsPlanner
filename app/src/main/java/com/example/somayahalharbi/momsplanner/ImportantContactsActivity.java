@@ -42,6 +42,33 @@ public class ImportantContactsActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     private ContactsAdapter contactsAdapter;
     private ArrayList<Contacts> contactsList = new ArrayList<>();
+    //------------save UI status-------------
+    private static final String CONTACTS_LIST="contact_list";
+
+    //------------- Save Dialog status------------
+    private static final String TITLE_TEXT="title_text";
+    private static final String ADDRESS_TEXT="address_text";
+    private static final String CITY_TEXT="city_text";
+    private static final String STATE_TEXT="state_text";
+    private static final String UNIT_TEXT="unit_text";
+    private static final String ZIPCODE_TEXT="zip_text";
+    private static final String PHONE_TEXT="phone_text";
+    private static final String EMAIL_TEXT="email_text";
+    private static final String DIALOG_STATUS="dialog_status";
+    private boolean dialogShown;
+    //------------ Dialog Views-----------
+     AlertDialog dialog;
+     Button addButton ;
+     Button cancelButton ;
+     EditText title ;
+    EditText address ;
+    EditText city ;
+     EditText state ;
+    EditText unit ;
+     EditText zipCode ;
+     EditText phone ;
+     EditText email;
+     //------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +115,24 @@ public class ImportantContactsActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(contactsRecyclerView);
+        if(savedInstanceState!=null && savedInstanceState.containsKey(CONTACTS_LIST))
+        {
+            contactsList=savedInstanceState.getParcelableArrayList(CONTACTS_LIST);
+            contactsAdapter.setData(contactsList);
+
+        }
+        else
+            getContacts();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+    }
+    private void getContacts(){
+
         ValueEventListener contactsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -120,17 +159,17 @@ public class ImportantContactsActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_contact, null);
         dialogBuilder.setView(dialogView);
-        final Button addButton = dialogView.findViewById(R.id.add_contact);
-        final Button cancelButton = dialogView.findViewById(R.id.cancel_btn);
-        final EditText title = dialogView.findViewById(R.id.contact_title);
-        final EditText address = dialogView.findViewById(R.id.address1);
-        final EditText city = dialogView.findViewById(R.id.city);
-        final EditText state = dialogView.findViewById(R.id.state);
-        final EditText unit = dialogView.findViewById(R.id.unit);
-        final EditText zipCode = dialogView.findViewById(R.id.zip_code);
-        final EditText phone = dialogView.findViewById(R.id.phone);
-        final EditText email = dialogView.findViewById(R.id.email);
-        final AlertDialog dialog = dialogBuilder.create();
+        addButton = dialogView.findViewById(R.id.add_contact);
+       cancelButton = dialogView.findViewById(R.id.cancel_btn);
+         title = dialogView.findViewById(R.id.contact_title);
+         address = dialogView.findViewById(R.id.address1);
+         city = dialogView.findViewById(R.id.city);
+         state = dialogView.findViewById(R.id.state);
+         unit = dialogView.findViewById(R.id.unit);
+       zipCode = dialogView.findViewById(R.id.zip_code);
+         phone = dialogView.findViewById(R.id.phone);
+         email = dialogView.findViewById(R.id.email);
+       dialog = dialogBuilder.create();
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +191,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
                 String key = contactsRef.push().getKey();
                 contacts.setId(key);
                 contactsRef.child(key).setValue(contacts);
+                getContacts();
                 dialog.dismiss();
 
 
@@ -160,6 +200,97 @@ public class ImportantContactsActivity extends AppCompatActivity {
         });
         dialog.show();
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(dialog!=null && dialog.isShowing())
+            dialogShown=true;
+        else
+            dialogShown=false;
+
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(CONTACTS_LIST,contactsList);
+        outState.putBoolean(DIALOG_STATUS, dialogShown);
+        if(dialogShown){
+            //Save the dialog views status
+            if(!title.getText().toString().isEmpty())
+                outState.putString(TITLE_TEXT,title.getText().toString());
+            if(!address.getText().toString().isEmpty())
+                outState.putString(ADDRESS_TEXT, address.getText().toString());
+            if(!city.getText().toString().isEmpty())
+                outState.putString(CITY_TEXT,city.getText().toString());
+
+            if(!state.getText().toString().isEmpty())
+                outState.putString(STATE_TEXT,state.getText().toString());
+
+            if(!unit.getText().toString().isEmpty())
+                outState.putString(UNIT_TEXT,unit.getText().toString());
+
+            if(!zipCode.getText().toString().isEmpty())
+                outState.putString(ZIPCODE_TEXT,zipCode.getText().toString());
+
+            if(!phone.getText().toString().isEmpty())
+                outState.putString(PHONE_TEXT,phone.getText().toString());
+
+            if(!email.getText().toString().isEmpty())
+                outState.putString(EMAIL_TEXT,email.getText().toString());
+
+
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState.getBoolean(DIALOG_STATUS)){
+            addContacts();
+            if(savedInstanceState.containsKey(TITLE_TEXT)){
+                String titleText=savedInstanceState.getString(TITLE_TEXT);
+                title.setText(titleText);
+            }
+            if(savedInstanceState.containsKey(ADDRESS_TEXT)){
+                String addressText=savedInstanceState.getString(ADDRESS_TEXT);
+               address.setText(addressText);
+            }
+            if(savedInstanceState.containsKey(CITY_TEXT)){
+                String cityText=savedInstanceState.getString(CITY_TEXT);
+                city.setText(cityText);
+
+            }
+            if(savedInstanceState.containsKey(UNIT_TEXT)){
+                String unitText=savedInstanceState.getString(UNIT_TEXT);
+                unit.setText(unitText);
+
+            }
+            if(savedInstanceState.containsKey(STATE_TEXT)){
+
+                String stateText=savedInstanceState.getString(STATE_TEXT);
+                state.setText(stateText);
+            }
+            if(savedInstanceState.containsKey(ZIPCODE_TEXT)){
+                String zipCodeText=savedInstanceState.getString(ZIPCODE_TEXT);
+                zipCode.setText(zipCodeText);
+
+            }
+            if(savedInstanceState.containsKey(PHONE_TEXT)){
+                String phoneText=savedInstanceState.getString(PHONE_TEXT);
+                phone.setText(phoneText);
+
+            }
+            if(savedInstanceState.containsKey(EMAIL_TEXT)){
+                String emailText=savedInstanceState.getString(EMAIL_TEXT);
+                email.setText(emailText);
+
+            }
+
+        }
+    }
 }
 //TODO: display error messages as needed
 //TODO: fix the UI and do data validation
+//TODO: fix bug when the device rotates recyclerView becomes empty

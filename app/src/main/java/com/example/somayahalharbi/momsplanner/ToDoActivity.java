@@ -19,12 +19,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-
 import com.example.somayahalharbi.momsplanner.adapters.ToDoAdapter;
 import com.example.somayahalharbi.momsplanner.helpers.WidgetUpdateHelper;
 import com.example.somayahalharbi.momsplanner.models.Member;
 import com.example.somayahalharbi.momsplanner.models.ToDo;
-import com.example.somayahalharbi.momsplanner.widget.MomsPlannerWidgetProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +43,17 @@ import butterknife.ButterKnife;
 public class ToDoActivity extends AppCompatActivity {
     @BindView(R.id.to_do_fab)
     FloatingActionButton addToDo;
+    //-------------- Dialog save status-----------------
     public static final String TO_DO_NODE = "todo";
+    private static final String DIALOG_STATUES="dialog_status";
+    private static final String TASK_EDIT_TEXT="task_text";
+    private static final String DUE_BY_TEXT="due_by_text";
+    //----------------- UI save status-----------
+    private static final String FILTER_SELECTION="filter_selection";
+    private static final String TODO_LIST="to_do_list";
+    private static final String MEMBERS_LIST="members_list";
+    private static final String OWNERS_LIST="owners_list";
+
     private static FirebaseDatabase database;
     @BindView(R.id.to_do_recyclerView)
     RecyclerView toDoRecyclerView;
@@ -62,7 +70,16 @@ public class ToDoActivity extends AppCompatActivity {
     ArrayList<String> owners;
     private int mPosition;
     private ArrayList<String> spinnerMembers;
-    private int filterSelection;
+    private int filterSelection=-1;
+    private boolean dialogShown;
+    private AlertDialog dialog;
+    //-------- Dialog Content---------
+     EditText taskEditText;
+     Button addButton;
+     Button cancelButton;
+     EditText dueByEditText;
+     RadioGroup priorityRadioGroup;
+
 
 
     @Override
@@ -77,7 +94,6 @@ public class ToDoActivity extends AppCompatActivity {
             database = FirebaseDatabase.getInstance();
         }
         toDoRef = database.getReference("users").child(user.getUid()).child(TO_DO_NODE);
-        getMembers();
 
 
         addToDo.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +102,6 @@ public class ToDoActivity extends AppCompatActivity {
                 addTask();
             }
         });
-        getAllData();
 
         LinearLayoutManager toDoLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         toDoRecyclerView.setLayoutManager(toDoLinearLayoutManager);
@@ -113,7 +128,65 @@ public class ToDoActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(toDoRecyclerView);
+        if(savedInstanceState!=null && savedInstanceState.containsKey(TODO_LIST))
+        {
+            //if(savedInstanceState.containsKey(FILTER_SELECTION))
+            filterSelection=savedInstanceState.getInt(FILTER_SELECTION);
+            /// if()
+            toDoList=savedInstanceState.getParcelableArrayList(TODO_LIST);
+            //if(savedInstanceState.containsKey(MEMBERS_LIST))
+            members=savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
+            // if(savedInstanceState.containsKey(OWNERS_LIST))
+            owners=savedInstanceState.getStringArrayList(OWNERS_LIST);
+            toDoAdapter.setData(toDoList);
+            createFilterSpinner();
 
+        }
+        else {
+
+            getMembers();
+            getAllData();
+
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //------------ Save UI status------------------------------
+        outState.putInt(FILTER_SELECTION,memberSpinner.getSelectedItemPosition());
+        outState.putParcelableArrayList(TODO_LIST, toDoList);
+        outState.putParcelableArrayList(MEMBERS_LIST,members);
+        outState.putStringArrayList(OWNERS_LIST, owners);
+
+        //-------------Save Dialog Status------------------------
+        outState.putBoolean(DIALOG_STATUES, dialogShown);
+        if(dialogShown){
+            if(!taskEditText.getText().toString().isEmpty())
+            outState.putString(TASK_EDIT_TEXT, taskEditText.getText().toString());
+            if(!dueByEditText.getText().toString().isEmpty())
+            outState.putString(DUE_BY_TEXT, dueByEditText.getText().toString());
+
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState.getBoolean(DIALOG_STATUES)){
+            addTask();
+           if(savedInstanceState.containsKey(TASK_EDIT_TEXT)){
+                String taskText=savedInstanceState.getString(TASK_EDIT_TEXT);
+                taskEditText.setText(taskText);
+            }
+            if(savedInstanceState.containsKey(DUE_BY_TEXT)){
+                String dueByText=savedInstanceState.getString(DUE_BY_TEXT);
+
+                dueByEditText.setText(dueByText);
+            }
+
+        }
     }
 
     private void getMembers() {
@@ -163,8 +236,10 @@ public class ToDoActivity extends AppCompatActivity {
         Log.w("create list", "Members list has " + members.size());
         Log.w("create list", "Owners list has " + owners.size());
         memberSpinner.setAdapter(membersAdapter);
-        memberSpinner.setSelection(spinnerMembers.size() - 1);
-
+        if(filterSelection==-1)
+            memberSpinner.setSelection(spinnerMembers.size() - 1);
+        else
+            memberSpinner.setSelection(filterSelection);
 
         memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -268,11 +343,11 @@ public class ToDoActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
         // ButterKnife.bind(this, dialogView);
         //TODO: replace this with Butterknife
-        final EditText task = dialogView.findViewById(R.id.task);
-        final Button addButton = dialogView.findViewById(R.id.add_to_do);
-        final Button cancelButton = dialogView.findViewById(R.id.cancel_btn);
-        final EditText dueBy = dialogView.findViewById(R.id.to_do_due_by);
-        final RadioGroup priorityRadioGroup = dialogView.findViewById(R.id.task_priority);
+        taskEditText = dialogView.findViewById(R.id.task);
+        addButton = dialogView.findViewById(R.id.add_to_do);
+        cancelButton= dialogView.findViewById(R.id.cancel_btn);
+        dueByEditText = dialogView.findViewById(R.id.to_do_due_by);
+        priorityRadioGroup = dialogView.findViewById(R.id.task_priority);
 
         final Spinner ownersSpinner = dialogView.findViewById(R.id.todo_owner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
@@ -306,12 +381,12 @@ public class ToDoActivity extends AppCompatActivity {
                 String myFormat = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-                dueBy.setText(sdf.format(myCalendar.getTime()));
+                dueByEditText.setText(sdf.format(myCalendar.getTime()));
             }
 
         };
 
-        dueBy.setOnClickListener(new View.OnClickListener() {
+        dueByEditText.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -321,7 +396,7 @@ public class ToDoActivity extends AppCompatActivity {
             }
         });
 
-        final AlertDialog dialog = dialogBuilder.create();
+        dialog = dialogBuilder.create();
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -334,7 +409,7 @@ public class ToDoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ToDo todo = new ToDo();
 
-                todo.setToDo(task.getText().toString());
+                todo.setToDo(taskEditText.getText().toString());
                 todo.setChecked(false);
                 int priorityId = priorityRadioGroup.getCheckedRadioButtonId();
                 int priority = 0;
@@ -348,7 +423,7 @@ public class ToDoActivity extends AppCompatActivity {
                     priority = 1;
                 Log.d("Priority", Integer.toString(priority));
                 todo.setPriority(priority);
-                todo.setDueBy(dueBy.getText().toString());
+                todo.setDueBy(dueByEditText.getText().toString());
                 if (mPosition < owners.size() - 1) {
                     todo.setOwner(members.get(mPosition).getName());
                     todo.setOwnerId(members.get(mPosition).getId());
@@ -371,16 +446,17 @@ public class ToDoActivity extends AppCompatActivity {
         dialog.show();
     }
 
-   /* public void updateWidgetData() {
-        Log.w("to do activity", "update widget data is just called");
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                MomsPlannerWidgetProvider.sendRefreshBroadcast(ToDoActivity.this);
-            }
-        });
-    }*/
+   @Override
+    public void onPause(){
+       super.onPause();
+       if(dialog!=null && dialog.isShowing())
+           dialogShown=true;
+       else
+           dialogShown=false;
+
+   }
 
 }
 //TODO: display error messages as needed
 //TODO: fix the UI and add data validations
+//TODO: dialog disappear when device rotates

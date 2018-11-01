@@ -46,6 +46,20 @@ public class FamilyActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     private MembersAdapter familyMembersAdapter;
     private ArrayList<Member> membersList = new ArrayList<>();
+    private AlertDialog dialog;
+    private boolean dialogShown;
+    //---------- Save Dialog Status-------------
+    private static final String DIALOG_STATUES="dialog_status";
+    private static final String NAME_EDIT_TEXT="name_text";
+    private static final String BIRTHDAY_TEXT="birthday_text";
+    //--------------- Save UI status-------------------------
+    private static final String MEMBERS_LIST="members_list";
+
+     EditText name;
+     EditText birthday;
+     Button addButton;
+     Button cancelButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,25 +88,6 @@ public class FamilyActivity extends AppCompatActivity {
         familyMembersAdapter = new MembersAdapter();
         familyMembersRecyclerView.setAdapter(familyMembersAdapter);
 
-        ValueEventListener membersListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                membersList = new ArrayList<>();
-                for (DataSnapshot memberSnapshot : dataSnapshot.getChildren()) {
-                    Member member = memberSnapshot.getValue(Member.class);
-                    membersList.add(member);
-                }
-                familyMembersAdapter.setData(membersList);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("FamilyActivity", "loadMember:onCancelled", databaseError.toException());
-            }
-        };
-        familyMemberRef.addValueEventListener(membersListener);
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
@@ -113,10 +108,37 @@ public class FamilyActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(familyMembersRecyclerView);
 
+        if(savedInstanceState!=null && savedInstanceState.containsKey(MEMBERS_LIST))
+        {
+            membersList=savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
+            familyMembersAdapter.setData(membersList);
+        }
+        else
+            getMembers();
 
 
     }
+private void getMembers(){
+        familyMemberRef.addValueEventListener(new ValueEventListener() {
+            @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            membersList = new ArrayList<>();
+            for (DataSnapshot memberSnapshot : dataSnapshot.getChildren()) {
+                Member member = memberSnapshot.getValue(Member.class);
+                membersList.add(member);
+            }
+            familyMembersAdapter.setData(membersList);
 
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            // Getting Post failed, log a message
+            Log.w("FamilyActivity", "loadMember:onCancelled", databaseError.toException());
+        }
+    });
+
+}
 
 
     private void addMembers(){
@@ -126,10 +148,10 @@ public class FamilyActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
         // ButterKnife.bind(this, dialogView);
         //TODO: replace this with Butterknife
-        final EditText name = dialogView.findViewById(R.id.member_name);
-        final Button addButton = dialogView.findViewById(R.id.add_member_button);
-        final Button cancelButton = dialogView.findViewById(R.id.cancel_member_button);
-        final EditText birthday = dialogView.findViewById(R.id.member_dob);
+       name = dialogView.findViewById(R.id.member_name);
+       addButton  = dialogView.findViewById(R.id.add_member_button);
+       cancelButton = dialogView.findViewById(R.id.cancel_member_button);
+       birthday = dialogView.findViewById(R.id.member_dob);
 
         final Calendar myCalendar = Calendar.getInstance();
 
@@ -162,7 +184,7 @@ public class FamilyActivity extends AppCompatActivity {
 
 
 
-        final AlertDialog dialog = dialogBuilder.create();
+        dialog = dialogBuilder.create();
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,6 +200,7 @@ public class FamilyActivity extends AppCompatActivity {
                 String key = familyMemberRef.push().getKey();
                 member.setId(key);
                 familyMemberRef.child(key).setValue(member);
+                getMembers();
                 dialog.dismiss();
 
             }
@@ -185,7 +208,48 @@ public class FamilyActivity extends AppCompatActivity {
         });
         dialog.show();
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(dialog!=null && dialog.isShowing())
+            dialogShown=true;
+        else
+            dialogShown=false;
+
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(MEMBERS_LIST,membersList);
+        outState.putBoolean(DIALOG_STATUES, dialogShown);
+        if(dialogShown){
+            if(!name.getText().toString().isEmpty())
+                outState.putString(NAME_EDIT_TEXT, name.getText().toString());
+            if(!birthday.getText().toString().isEmpty())
+                outState.putString(BIRTHDAY_TEXT, birthday.getText().toString());
+
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState.getBoolean(DIALOG_STATUES)){
+            addMembers();
+            if(savedInstanceState.containsKey(NAME_EDIT_TEXT)){
+                String nameText=savedInstanceState.getString(NAME_EDIT_TEXT);
+                name.setText(nameText);
+            }
+            if(savedInstanceState.containsKey(BIRTHDAY_TEXT)){
+                String dobText=savedInstanceState.getString(BIRTHDAY_TEXT);
+                birthday.setText(dobText);
+            }
+
+        }
+    }
 //TODO: fix the UI and do data validations
     //TODO: display error messages as needed
+    //TODO: fix bug when the device rotates recyclerView becomes empty
 
 }
