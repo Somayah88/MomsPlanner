@@ -71,15 +71,15 @@ public class AppointmentsActivity extends AppCompatActivity {
     private int mPosition;
     private ArrayList<String> spinnerMembers;
     private int filterSelection=-1;
-    //------------------ Dialog save status-----------
-    private boolean dialogShown;
+    //---------------- UI save state-----------------
+    private static final String FILTER_SELECTION = "filter_selection";
     private static final String DIALOG_STATUES="dialog_status";
     private static final String APPOINTMENT_TITLE_TEXT="appointment_text";
     private static final String LOCATION_TEXT="location_text";
     private static final String APPT_DATE_TEX="appt_date_text";
     private static final String APPT_TIME_TEXT="appt_time_text";
-    //---------------- UI save status-----------------
-    private static final String FILTER_SELECTION="filter_selection";
+    //------------------ Dialog save state-----------
+    private boolean dialogShown;
     private static final String APPOINTMENTS_LIST="appt_list";
     private static final String MEMBERS_LIST="members_list";
     private static final String OWNERS_LIST="owners_list";
@@ -482,23 +482,20 @@ public class AppointmentsActivity extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
-        if(dialog!=null && dialog.isShowing())
-            dialogShown=true;
-        else
-            dialogShown=false;
+        dialogShown = dialog != null && dialog.isShowing();
 
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //------------ Save UI status------------------------------
+        //------------ Save UI state------------------------------
         outState.putBoolean(DIALOG_STATUES, dialogShown);
         outState.putInt(FILTER_SELECTION,memberSpinner.getSelectedItemPosition());
         outState.putParcelableArrayList(APPOINTMENTS_LIST, appointmentList);
         outState.putParcelableArrayList(MEMBERS_LIST,members);
         outState.putStringArrayList(OWNERS_LIST, owners);
 
-        //-------------Save Dialog Status------------------------
+        //-------------Save Dialog State------------------------
         if(dialogShown){
             if(!apptTitle.getText().toString().isEmpty())
                 outState.putString(APPOINTMENT_TITLE_TEXT, apptTitle.getText().toString());

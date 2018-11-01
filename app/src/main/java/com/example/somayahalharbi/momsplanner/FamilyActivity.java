@@ -48,11 +48,11 @@ public class FamilyActivity extends AppCompatActivity {
     private ArrayList<Member> membersList = new ArrayList<>();
     private AlertDialog dialog;
     private boolean dialogShown;
-    //---------- Save Dialog Status-------------
+    //---------- Save Dialog State-------------
     private static final String DIALOG_STATUES="dialog_status";
     private static final String NAME_EDIT_TEXT="name_text";
     private static final String BIRTHDAY_TEXT="birthday_text";
-    //--------------- Save UI status-------------------------
+    //--------------- Save UI state-------------------------
     private static final String MEMBERS_LIST="members_list";
 
      EditText name;
@@ -212,10 +212,7 @@ private void getMembers(){
     @Override
     public void onPause(){
         super.onPause();
-        if(dialog!=null && dialog.isShowing())
-            dialogShown=true;
-        else
-            dialogShown=false;
+        dialogShown = dialog != null && dialog.isShowing();
 
     }
     @Override
@@ -250,6 +247,6 @@ private void getMembers(){
     }
 //TODO: fix the UI and do data validations
     //TODO: display error messages as needed
-    //TODO: fix bug when the device rotates recyclerView becomes empty
+    //TODO: fix bug when the device rotates and item deleted recyclerView becomes empty
 
 }

@@ -43,12 +43,12 @@ import butterknife.ButterKnife;
 public class ToDoActivity extends AppCompatActivity {
     @BindView(R.id.to_do_fab)
     FloatingActionButton addToDo;
-    //-------------- Dialog save status-----------------
+    //-------------- Dialog save state-----------------
     public static final String TO_DO_NODE = "todo";
     private static final String DIALOG_STATUES="dialog_status";
     private static final String TASK_EDIT_TEXT="task_text";
     private static final String DUE_BY_TEXT="due_by_text";
-    //----------------- UI save status-----------
+    //----------------- UI save state-----------
     private static final String FILTER_SELECTION="filter_selection";
     private static final String TODO_LIST="to_do_list";
     private static final String MEMBERS_LIST="members_list";
@@ -154,13 +154,13 @@ public class ToDoActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //------------ Save UI status------------------------------
+        //------------ Save UI state------------------------------
         outState.putInt(FILTER_SELECTION,memberSpinner.getSelectedItemPosition());
         outState.putParcelableArrayList(TODO_LIST, toDoList);
         outState.putParcelableArrayList(MEMBERS_LIST,members);
         outState.putStringArrayList(OWNERS_LIST, owners);
 
-        //-------------Save Dialog Status------------------------
+        //-------------Save Dialog State------------------------
         outState.putBoolean(DIALOG_STATUES, dialogShown);
         if(dialogShown){
             if(!taskEditText.getText().toString().isEmpty())
@@ -449,14 +449,10 @@ public class ToDoActivity extends AppCompatActivity {
    @Override
     public void onPause(){
        super.onPause();
-       if(dialog!=null && dialog.isShowing())
-           dialogShown=true;
-       else
-           dialogShown=false;
+       dialogShown = dialog != null && dialog.isShowing();
 
    }
 
 }
 //TODO: display error messages as needed
 //TODO: fix the UI and add data validations
-//TODO: dialog disappear when device rotates

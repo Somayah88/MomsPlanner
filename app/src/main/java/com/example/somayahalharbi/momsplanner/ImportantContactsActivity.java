@@ -42,10 +42,10 @@ public class ImportantContactsActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     private ContactsAdapter contactsAdapter;
     private ArrayList<Contacts> contactsList = new ArrayList<>();
-    //------------save UI status-------------
+    //------------save UI state-------------
     private static final String CONTACTS_LIST="contact_list";
 
-    //------------- Save Dialog status------------
+    //------------- Save Dialog state------------
     private static final String TITLE_TEXT="title_text";
     private static final String ADDRESS_TEXT="address_text";
     private static final String CITY_TEXT="city_text";
@@ -204,10 +204,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
-        if(dialog!=null && dialog.isShowing())
-            dialogShown=true;
-        else
-            dialogShown=false;
+        dialogShown = dialog != null && dialog.isShowing();
 
     }
     @Override
@@ -216,7 +213,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
         outState.putParcelableArrayList(CONTACTS_LIST,contactsList);
         outState.putBoolean(DIALOG_STATUS, dialogShown);
         if(dialogShown){
-            //Save the dialog views status
+            //Save the dialog views state
             if(!title.getText().toString().isEmpty())
                 outState.putString(TITLE_TEXT,title.getText().toString());
             if(!address.getText().toString().isEmpty())
