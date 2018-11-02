@@ -138,6 +138,4 @@ public class MainActivity extends AppCompatActivity {
 }
 
 //TODO: Firebase jobDispatcher not working
-//TODO: save the app state when the device configuration changes
-//TODO: unregister listeners.
 //TODO: sign the app

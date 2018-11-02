@@ -155,7 +155,6 @@ public class ImportantContactsActivity extends AppCompatActivity {
     }
 
     private void addContacts() {
-        //TODO: validate data and put default for nt available data
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_contact, null);
@@ -300,5 +299,3 @@ public class ImportantContactsActivity extends AppCompatActivity {
         }
     }
 }
-//TODO: display error messages as needed
-//TODO: fix bug when the device rotates recyclerView becomes empty

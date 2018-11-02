@@ -307,8 +307,6 @@ public class AppointmentsActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_appointment, null);
         dialogBuilder.setView(dialogView);
-        // ButterKnife.bind(this, dialogView);
-        //TODO: replace this with Butterknife
         apptTitle = dialogView.findViewById(R.id.appt_title);
         addButton = dialogView.findViewById(R.id.add_appt_button);
         cancelButton = dialogView.findViewById(R.id.cancel_appt_button);

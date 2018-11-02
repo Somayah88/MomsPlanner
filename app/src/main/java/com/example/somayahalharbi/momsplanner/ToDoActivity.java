@@ -340,8 +340,6 @@ public class ToDoActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_todo, null);
         dialogBuilder.setView(dialogView);
-        // ButterKnife.bind(this, dialogView);
-        //TODO: replace this with Butterknife
         taskEditText = dialogView.findViewById(R.id.task);
         addButton = dialogView.findViewById(R.id.add_to_do);
         cancelButton= dialogView.findViewById(R.id.cancel_btn);
@@ -456,4 +454,3 @@ public class ToDoActivity extends AppCompatActivity {
    }
 
 }
-//TODO: display error messages as needed

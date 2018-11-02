@@ -250,6 +250,5 @@ public class FamilyActivity extends AppCompatActivity {
 
         }
     }
-    //TODO: fix bug when the device rotates and item deleted recyclerView becomes empty
 
 }
