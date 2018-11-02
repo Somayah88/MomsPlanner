@@ -77,12 +77,12 @@ public class LoginActivity extends AppCompatActivity {
                 String email=mLoginEmail.getText().toString().trim();
                 final String password=mLoginPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Please, enter email address!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.empty_email_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Please, enter password!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.empty_password_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 mLoginProgress.setVisibility(View.VISIBLE);
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email=editEmail.getText().toString().trim();
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Please, enter email address!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.empty_email_error), Toast.LENGTH_SHORT).show();
                     return;
 
                 }
@@ -146,12 +146,12 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful())
                         {
-                            Toast.makeText(LoginActivity.this, "We have sent you the instructions to reset your password!"
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.password_reset_message)
                                     , Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
-                            Toast.makeText(LoginActivity.this, "Failed to send reset email!",
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.reset_fail_message),
                                     Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.GONE);
@@ -163,7 +163,6 @@ public class LoginActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-
 
 
 

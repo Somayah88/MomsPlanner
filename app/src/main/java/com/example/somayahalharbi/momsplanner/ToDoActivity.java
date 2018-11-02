@@ -19,6 +19,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.example.somayahalharbi.momsplanner.adapters.ToDoAdapter;
 import com.example.somayahalharbi.momsplanner.helpers.WidgetUpdateHelper;
 import com.example.somayahalharbi.momsplanner.models.Member;
@@ -208,15 +210,16 @@ public class ToDoActivity extends AppCompatActivity {
                     String owner = member.getName();
                     owners.add(owner);
                 }
-                Log.w("getMembers", "Members list has " + members.size());
-                Log.w("getMembers", "Owners list has " + owners.size());
                 owners.add("No Owner");
                 createFilterSpinner();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("AppointmentActivity", "loadAppointments:onCancelled", databaseError.toException());
+                Log.w("ToDoActivity", "loadToDos:onCancelled", databaseError.toException());
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
+
+
 
 
             }
@@ -232,9 +235,6 @@ public class ToDoActivity extends AppCompatActivity {
 
         ArrayAdapter<String> membersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerMembers);
         membersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // final Spinner memberSpinner=findViewById(R.id.appt_member_spinner);
-        Log.w("create list", "Members list has " + members.size());
-        Log.w("create list", "Owners list has " + owners.size());
         memberSpinner.setAdapter(membersAdapter);
         if(filterSelection==-1)
             memberSpinner.setSelection(spinnerMembers.size() - 1);
@@ -244,7 +244,6 @@ public class ToDoActivity extends AppCompatActivity {
         memberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.w("Filter Selected", "position is " + i);
                 filterSelection = i;
                 getData(i);
 
@@ -278,8 +277,6 @@ public class ToDoActivity extends AppCompatActivity {
 
     private void getFilteredData(int position) {
 
-        Log.w("getFilteredData", "Members list has " + members.size());
-        Log.w("getFilteredData", "Owners list has " + owners.size());
 
         Query queryRef = toDoRef.orderByChild("ownerId").equalTo(members.get(position).getId());
         queryRef.addValueEventListener(new ValueEventListener() {
@@ -299,10 +296,11 @@ public class ToDoActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
+
 
             }
         });
-        Log.w("GetFilteredData", "Get Filtered data was just executed");
 
 
     }
@@ -317,7 +315,6 @@ public class ToDoActivity extends AppCompatActivity {
                     ToDo todo = taskSnapshot.getValue(ToDo.class);
                     toDoList.add(todo);
                 }
-                Log.w("GetAllData", "Get All data was just executed and selected position is " + filterSelection);
 
                 toDoAdapter.setData(toDoList);
                 WidgetUpdateHelper.updateWidgetData(ToDoActivity.this);
@@ -327,7 +324,9 @@ public class ToDoActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("AppointmentActivity", "loadAppointments:onCancelled", databaseError.toException());
+                Log.w("ToDoActivity", "loadToDos:onCancelled", databaseError.toException());
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
+
 
 
             }
@@ -407,38 +406,42 @@ public class ToDoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ToDo todo = new ToDo();
-
-                todo.setToDo(taskEditText.getText().toString());
-                todo.setChecked(false);
-                int priorityId = priorityRadioGroup.getCheckedRadioButtonId();
-                int priority = 0;
-                if (priorityId == -1)
-                    priority = 0;
-                if (priorityId == R.id.high_priority)
-                    priority = 3;
-                if (priorityId == R.id.medium_priority)
-                    priority = 2;
-                if (priorityId == R.id.low_priority)
-                    priority = 1;
-                Log.d("Priority", Integer.toString(priority));
-                todo.setPriority(priority);
-                todo.setDueBy(dueByEditText.getText().toString());
-                if (mPosition < owners.size() - 1) {
-                    todo.setOwner(members.get(mPosition).getName());
-                    todo.setOwnerId(members.get(mPosition).getId());
+                if (taskEditText.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.task_title_empty), Toast.LENGTH_SHORT).show();
                 } else {
-                    todo.setOwner("No Owner");
-                    todo.setOwnerId("0");
+                    todo.setToDo(taskEditText.getText().toString());
+                    todo.setChecked(false);
+                    int priorityId = priorityRadioGroup.getCheckedRadioButtonId();
+                    int priority = 0;
+                    if (priorityId == -1)
+                        priority = 0;
+                    if (priorityId == R.id.high_priority)
+                        priority = 3;
+                    if (priorityId == R.id.medium_priority)
+                        priority = 2;
+                    if (priorityId == R.id.low_priority)
+                        priority = 1;
+                    todo.setPriority(priority);
+                    if (dueByEditText.getText().toString().isEmpty())
+                        todo.setDueBy(getResources().getString(R.string.due_by_default));
+                    else
+                        todo.setDueBy(dueByEditText.getText().toString());
+                    if (mPosition < owners.size() - 1) {
+                        todo.setOwner(members.get(mPosition).getName());
+                        todo.setOwnerId(members.get(mPosition).getId());
+                    } else {
+                        todo.setOwner("No Owner");
+                        todo.setOwnerId("0");
 
+                    }
+                    String key = toDoRef.push().getKey();
+                    todo.setTaskId(key);
+                    toDoRef.child(key).setValue(todo);
+                    resetMemberSpinner();
+                    getAllData();
+
+                    dialog.dismiss();
                 }
-                String key = toDoRef.push().getKey();
-                todo.setTaskId(key);
-                toDoRef.child(key).setValue(todo);
-                resetMemberSpinner();
-                getAllData();
-
-                dialog.dismiss();
-
             }
 
         });
@@ -454,4 +457,3 @@ public class ToDoActivity extends AppCompatActivity {
 
 }
 //TODO: display error messages as needed
-//TODO: fix the UI and add data validations

@@ -46,12 +46,19 @@
     <string name="login_link">You Do not have an account? Sign up</string>
     <string name="password_reset_link"> Forgot Your Password? </string>
     <string name="authentication_failed">Authentication Failed</string>
+    <string name="password_reset_message">We have sent you the instructions to reset your password! </string>
+    <string name="reset_fail_message">Failed to send reset email! </string>
     <!-- Strings related to sign up -->
 
     <string name="title_activity_signup">Sign Up</string>
     <string name="action_sign_up">Sign Up </string>
     <string name="action_sign_up_short">Sign up</string>
     <string name="sigin_link">Already have an account? login </string>
+    <string name="empty_email_error">Please, enter valid email address!</string>
+    <string name="empty_password_error">Please, enter password!</string>
+    <string name="short_password_error">Password too short, enter minimum 8 characters!</string>
+    <string name="sign_up_error">Sign Up failed...</string>
+
 
     <!-- Strings Related to Password Reset Screen -->
     <string name="reset_prompt">Please enter your email id so we can send you the instructions to reset yor password. </string>
@@ -111,6 +118,16 @@
     <string name="overdue_tasks_notification_title">Overdue Tasks </string>
     <string name="appointments_notifications_content">You have %1$d upcoming appointment/s</string>
     <string name="overdue_tasks_notifications_content">You have %1$d Overdue task/s</string>
+
+    <!-- Error Messages-->
+    <string name="error_loading_data"> Data cannot be loaded now, please try again later.. </string>
+    <string name="appt_title_empty">Appointment title cannot be empty.. </string>
+    <string name="appt_date_empty"> Appointment date cannot be empty.. </string>
+    <string name="appt_time_empty"> Appointment time cannot be empty..</string>
+    <string name="member_name_empty">Members name cannot be empty.. </string>
+    <string name="task_title_empty"> Task title cannot be empty.. </string>
+    <string name="contact_title_empty">Contact title cannot be empty..</string>
+    <string name="contact_empty">You have to add at least one contact..</string>
 
 
 </resources>

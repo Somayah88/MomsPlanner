@@ -74,17 +74,17 @@ public class SignupActivity extends AppCompatActivity {
                 String password=mPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Please, enter email address!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.empty_email_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Please, enter password!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.empty_password_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (password.length() < 8) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 8 characters!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.short_password_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -95,7 +95,7 @@ public class SignupActivity extends AppCompatActivity {
                         signu_progress.setVisibility(View.GONE);
                         if(!task.isSuccessful())
                         {
-                            Toast.makeText(SignupActivity.this, "Sign Up failed." + task.getException(),
+                            Toast.makeText(SignupActivity.this, getResources().getString(R.string.sign_up_error) + task.getException(),
                                     Toast.LENGTH_SHORT).show();
                         }
                         else {

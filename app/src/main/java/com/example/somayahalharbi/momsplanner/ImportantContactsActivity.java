@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.somayahalharbi.momsplanner.adapters.ContactsAdapter;
 import com.example.somayahalharbi.momsplanner.models.Contacts;
@@ -126,12 +127,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
 
     }
 
-    /*@Override
-    protected void onStart() {
-        super.onStart();
 
-    }
-    */
     private void getContacts(){
 
         ValueEventListener contactsListener = new ValueEventListener() {
@@ -148,7 +144,9 @@ public class ImportantContactsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("ContactsActivity", "loadMember:onCancelled", databaseError.toException());
+                Log.w("ContactsActivity", "loadContacts:onCancelled", databaseError.toException());
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
+
             }
         };
         contactsRef.addValueEventListener(contactsListener);
@@ -180,21 +178,31 @@ public class ImportantContactsActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Contacts contacts = new Contacts();
-                contacts.setTitle(title.getText().toString());
-                contacts.setStreetAddress(address.getText().toString());
-                contacts.setUnit(unit.getText().toString());
-                contacts.setZipCode(zipCode.getText().toString());
-                contacts.setState(state.getText().toString());
-                contacts.setPhone(phone.getText().toString());
-                contacts.setEmailAddress(email.getText().toString());
-                contacts.setCity(city.getText().toString());
-                String key = contactsRef.push().getKey();
-                contacts.setId(key);
-                contactsRef.child(key).setValue(contacts);
-                getContacts();
-                dialog.dismiss();
+                if (title.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_title_empty), Toast.LENGTH_SHORT).show();
 
+                }
+                if (address.getText().toString().isEmpty() && phone.getText().toString().isEmpty() && email.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_empty), Toast.LENGTH_SHORT).show();
+
+                } else {
+
+
+                    Contacts contacts = new Contacts();
+                    contacts.setTitle(title.getText().toString());
+                    contacts.setStreetAddress(address.getText().toString());
+                    contacts.setUnit(unit.getText().toString());
+                    contacts.setZipCode(zipCode.getText().toString());
+                    contacts.setState(state.getText().toString());
+                    contacts.setPhone(phone.getText().toString());
+                    contacts.setEmailAddress(email.getText().toString());
+                    contacts.setCity(city.getText().toString());
+                    String key = contactsRef.push().getKey();
+                    contacts.setId(key);
+                    contactsRef.child(key).setValue(contacts);
+                    getContacts();
+                    dialog.dismiss();
+                }
 
             }
 

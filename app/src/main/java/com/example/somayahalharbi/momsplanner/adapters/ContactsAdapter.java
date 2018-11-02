@@ -46,6 +46,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         String contactState = contacts.get(position).getState();
         String contactZipCode = contacts.get(position).getZipCode();
         String contactsUnit = contacts.get(position).getUnit();
+        //TODO: put address default for empty values
 
         String fullAddress;
         if (!contactsUnit.equals("null")) {
@@ -58,7 +59,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             fullAddress = contactAddress + ", " + contactCity + ", " + contactState + " " + contactZipCode;
 
         }
-
+        //TODO: better display for empty values
         viewHolder.contactTitle.setText(title);
         viewHolder.contactEmail.setText(email);
         viewHolder.contactPhoneNo.setText(phone);

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.somayahalharbi.momsplanner.adapters.MembersAdapter;
 import com.example.somayahalharbi.momsplanner.models.Member;
@@ -118,7 +119,8 @@ public class FamilyActivity extends AppCompatActivity {
 
 
     }
-private void getMembers(){
+
+    private void getMembers() {
         familyMemberRef.addValueEventListener(new ValueEventListener() {
             @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -133,8 +135,7 @@ private void getMembers(){
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            // Getting Post failed, log a message
-            Log.w("FamilyActivity", "loadMember:onCancelled", databaseError.toException());
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
         }
     });
 
@@ -195,13 +196,18 @@ private void getMembers(){
             @Override
             public void onClick(View view) {
                 Member member = new Member();
-                member.setName(name.getText().toString());
-                member.setDOB(birthday.getText().toString());
-                String key = familyMemberRef.push().getKey();
-                member.setId(key);
-                familyMemberRef.child(key).setValue(member);
-                getMembers();
-                dialog.dismiss();
+                if (name.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.member_name_empty), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    member.setName(name.getText().toString());
+                    member.setDOB(birthday.getText().toString());
+                    String key = familyMemberRef.push().getKey();
+                    member.setId(key);
+                    familyMemberRef.child(key).setValue(member);
+                    getMembers();
+                    dialog.dismiss();
+                }
 
             }
 
@@ -245,8 +251,6 @@ private void getMembers(){
 
         }
     }
-//TODO: fix the UI and do data validations
-    //TODO: display error messages as needed
     //TODO: fix bug when the device rotates and item deleted recyclerView becomes empty
 
 }
