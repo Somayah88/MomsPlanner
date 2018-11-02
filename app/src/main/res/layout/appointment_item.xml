@@ -6,9 +6,9 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="4dp"
-    android:layout_margin="8dp">
+    android:layout_margin="@dimen/margin_padding_small"
+    card_view:cardCornerRadius="@dimen/card_view_radius"
+    card_view:cardElevation="@dimen/card_view_elevation">
 
 <LinearLayout
 
@@ -20,9 +20,9 @@
         android:id="@+id/appt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_padding_small"
+        android:layout_marginStart="@dimen/margin_padding_small"
+        android:layout_marginTop="@dimen/margin_padding_small"
         android:layout_gravity="center"
         android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -32,13 +32,13 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="@dimen/margin_padding_small"
         >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/location_title"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_padding_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appt_date"
             android:textColor="@color/titlesColor"
@@ -48,8 +48,8 @@
             android:id="@+id/appt_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/margin_padding_small"
+            android:layout_marginTop="@dimen/margin_padding_small"
             app:layout_constraintStart_toEndOf="@id/location_title"
             app:layout_constraintTop_toBottomOf="@+id/appt_date"
             tools:text="@string/appt_location" />
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/appt_date_title"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_padding_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:textColor="@color/titlesColor"
@@ -67,8 +67,8 @@
             android:id="@+id/appt_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/margin_padding_small"
+            android:layout_marginTop="@dimen/margin_padding_small"
             app:layout_constraintStart_toEndOf="@id/appt_date_title"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/due_by_default" />
@@ -76,8 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/appt_time_title"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/margin_padding_medium"
+            android:layout_marginTop="@dimen/margin_padding_small"
             android:text="@string/appointment_time_title"
             android:textColor="@color/titlesColor"
             app:layout_constraintStart_toEndOf="@+id/appt_date"
@@ -87,8 +87,8 @@
             android:id="@+id/appt_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/margin_padding_small"
+            android:layout_marginTop="@dimen/margin_padding_small"
             tools:text="@string/due_by_default"
             app:layout_constraintStart_toEndOf="@+id/appt_time_title"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/owner_title"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_padding_small"
             android:textColor="@color/titlesColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appt_location"
@@ -108,8 +108,8 @@
             android:id="@+id/appt_owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/margin_padding_small"
+            android:layout_marginTop="@dimen/margin_padding_small"
             app:layout_constraintTop_toBottomOf="@+id/appt_location"
             app:layout_constraintStart_toEndOf="@+id/owner_title"
 
@@ -120,8 +120,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="@dimen/separator_view_height"
+        android:layout_marginTop="@dimen/margin_padding_medium"
         android:background="@color/colorPrimaryDark"
         android:visibility="visible" />
 </LinearLayout>

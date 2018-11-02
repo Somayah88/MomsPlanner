@@ -42,7 +42,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
     private ContactsAdapter contactsAdapter;
-    private ArrayList<Contacts> contactsList = new ArrayList<>();
+    private ArrayList<Contacts> contactsList;
     //------------save UI state-------------
     private static final String CONTACTS_LIST="contact_list";
 
@@ -108,6 +108,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     contactsAdapter.removeContact(position);
+                    getContacts();
 
 
                 }
@@ -116,6 +117,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(contactsRecyclerView);
+
         if(savedInstanceState!=null && savedInstanceState.containsKey(CONTACTS_LIST))
         {
             contactsList=savedInstanceState.getParcelableArrayList(CONTACTS_LIST);
@@ -219,7 +221,8 @@ public class ImportantContactsActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(CONTACTS_LIST,contactsList);
+        if (contactsList != null)
+            outState.putParcelableArrayList(CONTACTS_LIST, contactsList);
         outState.putBoolean(DIALOG_STATUS, dialogShown);
         if(dialogShown){
             //Save the dialog views state

@@ -46,7 +46,7 @@ public class FamilyActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
     private MembersAdapter familyMembersAdapter;
-    private ArrayList<Member> membersList = new ArrayList<>();
+    private ArrayList<Member> membersList;
     private AlertDialog dialog;
     private boolean dialogShown;
     //---------- Save Dialog State-------------
@@ -101,6 +101,7 @@ public class FamilyActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     familyMembersAdapter.removeMember(position);
+                    getMembers();
 
                 }
 
@@ -147,8 +148,6 @@ public class FamilyActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_member, null);
         dialogBuilder.setView(dialogView);
-        // ButterKnife.bind(this, dialogView);
-        //TODO: replace this with Butterknife
        name = dialogView.findViewById(R.id.member_name);
        addButton  = dialogView.findViewById(R.id.add_member_button);
        cancelButton = dialogView.findViewById(R.id.cancel_member_button);

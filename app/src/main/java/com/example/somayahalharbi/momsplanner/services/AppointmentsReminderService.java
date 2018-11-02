@@ -58,12 +58,15 @@ public class AppointmentsReminderService extends JobService {
                 appointmentList = new ArrayList<>();
                 for (DataSnapshot apptSnapshot : dataSnapshot.getChildren()) {
                     Appointment appt = apptSnapshot.getValue(Appointment.class);
-                    try {
-                        Date strDate = sdf.parse(appt.getApptDate());
-                        if ( strDate.getTime()>=today.getTime() && strDate.getTime()<=twoDaysLater.getTime())
+                    String aDate = appt.getApptDate();
+                    if (aDate != null) {
+                        try {
+                            Date strDate = sdf.parse(aDate);
+                            if (strDate.getTime() >= today.getTime() && strDate.getTime() <= twoDaysLater.getTime())
                                 appointmentList.add(appt);
-                    }
-                    catch (ParseException e) {
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
 
 

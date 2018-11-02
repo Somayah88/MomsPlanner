@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingBottom="@dimen/margin_padding_small"
+    android:paddingTop="@dimen/margin_padding_small"
     android:layout_gravity="center"
     android:orientation="vertical">
 
@@ -35,7 +35,7 @@
             android:id="@+id/widget_due_by_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/margin_padding_small"
             android:textColor="@color/textColor"
             tools:text="@string/due_by_default" />
     </LinearLayout>

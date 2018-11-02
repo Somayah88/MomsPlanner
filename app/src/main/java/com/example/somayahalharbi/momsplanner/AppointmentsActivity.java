@@ -59,12 +59,10 @@ public class AppointmentsActivity extends AppCompatActivity {
     RecyclerView apptRecyclerView;
     @BindView(R.id.appt_member_spinner)
     Spinner memberSpinner;
-    //DatabaseReference rootRef;
     DatabaseReference apptRef;
     DatabaseReference ownersRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
-    String ownerId = "0";
     ArrayList<Member> members;
     ArrayList<String> owners;
     private AppointmentsAdapter appointmentAdapter;

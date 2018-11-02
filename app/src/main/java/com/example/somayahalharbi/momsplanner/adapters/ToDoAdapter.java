@@ -33,9 +33,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
     private ArrayList<ToDo> toDos = new ArrayList<>();
     private Context mContext;
     private static FirebaseDatabase database;
-    DatabaseReference toDoRef;
-    FirebaseUser user;
-    FirebaseAuth mFirebaseAuth;
+    private DatabaseReference toDoRef;
+    private FirebaseUser user;
+    private FirebaseAuth mFirebaseAuth;
 
 
 
@@ -94,18 +94,22 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
         boolean checked = toDos.get(position).isChecked();
         int priority = toDos.get(position).getPriority();
         viewHolder.toDoTask.setText(task);
-        viewHolder.taskDueBy.setText(dueBy);
+        if (!dueBy.isEmpty())
+            viewHolder.taskDueBy.setText(dueBy);
+        else
+            viewHolder.taskDueBy.setText(mContext.getResources().getString(R.string.due_by_default));
+
         viewHolder.taskOwner.setText(owner);
         viewHolder.toDoTask.setChecked(checked);
         if (priority == 1) {
-            viewHolder.taskPriority.setText("Low");
+            viewHolder.taskPriority.setText(mContext.getResources().getString(R.string.priority_low));
             viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.low));
 
         } else if (priority == 2) {
-            viewHolder.taskPriority.setText("Medium");
+            viewHolder.taskPriority.setText(mContext.getResources().getString(R.string.priority_medium));
             viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.medium));
         } else if (priority == 3) {
-            viewHolder.taskPriority.setText("High");
+            viewHolder.taskPriority.setText(mContext.getResources().getString(R.string.priority_high));
             viewHolder.taskPriority.setTextColor(ContextCompat.getColor(mContext, R.color.high));
         }
     }

@@ -94,10 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         scheduleAppointmentReminderService(this);
-       // scheduleOverdueTaskNotificationService(this);
-        //TODO:  uncomment this
-        WidgetUpdateHelper.updateWidgetData(MainActivity.this);
-        //TODO: this doesn't work , Why??
+        scheduleOverdueTaskNotificationService(this);
 
 
     }

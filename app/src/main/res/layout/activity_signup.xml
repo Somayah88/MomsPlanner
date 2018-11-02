@@ -17,7 +17,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/margin_padding_medium"
         android:visibility="gone" />
 
     <ScrollView
@@ -29,7 +29,7 @@
             android:id="@+id/email_signup_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:padding="@dimen/margin_padding_small"
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
@@ -70,7 +70,7 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/margin_padding_medium"
                 android:text="@string/action_sign_up"
                 android:textStyle="bold" />
 
@@ -79,8 +79,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sigin_link"
                 android:layout_gravity="center"
-                android:layout_marginTop="64dp"
-                android:padding="8dp"
+                android:layout_marginTop="@dimen/activity_login_signup_button_margin_top"
+                android:padding="@dimen/margin_padding_small"
                 android:background="@null"
                 android:id="@+id/login_link"
                 android:textAllCaps="false"

@@ -65,7 +65,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         notifyDataSetChanged();
     }
 
-    public void clear() {
+    private void clear() {
         int size = appointments.size();
         appointments.clear();
         notifyItemRangeRemoved(0, size);
