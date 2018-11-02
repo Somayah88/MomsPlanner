@@ -16,7 +16,7 @@ import com.example.somayahalharbi.momsplanner.ToDoActivity;
  * Implementation of App Widget functionality.
  */
 //TODO: more testing to make sure it behaves well
-    //TODO: change the prevew
+//TODO: change the preview
 
 public class MomsPlannerWidgetProvider extends AppWidgetProvider {
 

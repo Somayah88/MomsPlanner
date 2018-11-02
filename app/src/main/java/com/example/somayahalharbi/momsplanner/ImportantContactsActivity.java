@@ -126,11 +126,12 @@ public class ImportantContactsActivity extends AppCompatActivity {
 
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
 
     }
+    */
     private void getContacts(){
 
         ValueEventListener contactsListener = new ValueEventListener() {
@@ -289,5 +290,4 @@ public class ImportantContactsActivity extends AppCompatActivity {
     }
 }
 //TODO: display error messages as needed
-//TODO: fix the UI and do data validation
 //TODO: fix bug when the device rotates recyclerView becomes empty

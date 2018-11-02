@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsAdapterViewHolder> {
-    private ArrayList<Contacts> contacts = new ArrayList<Contacts>();
+    private ArrayList<Contacts> contacts = new ArrayList<>();
     private static FirebaseDatabase database;
 
 

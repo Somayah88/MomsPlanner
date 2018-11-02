@@ -30,7 +30,7 @@ import static com.example.somayahalharbi.momsplanner.ToDoActivity.TO_DO_NODE;
 
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterViewHolder> {
-    private ArrayList<ToDo> toDos = new ArrayList<ToDo>();
+    private ArrayList<ToDo> toDos = new ArrayList<>();
     private Context mContext;
     private static FirebaseDatabase database;
     DatabaseReference toDoRef;

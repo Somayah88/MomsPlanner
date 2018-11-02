@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import static com.example.somayahalharbi.momsplanner.FamilyActivity.MEMBER;
 
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAdapterViewHolder> {
-    private ArrayList<Member> members = new ArrayList<Member>();
+    private ArrayList<Member> members = new ArrayList<>();
     private static FirebaseDatabase database;
 
 

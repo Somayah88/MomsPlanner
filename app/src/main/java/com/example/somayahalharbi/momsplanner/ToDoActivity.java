@@ -230,7 +230,7 @@ public class ToDoActivity extends AppCompatActivity {
         spinnerMembers.add("All");
 
 
-        ArrayAdapter<String> membersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerMembers);
+        ArrayAdapter<String> membersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerMembers);
         membersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // final Spinner memberSpinner=findViewById(R.id.appt_member_spinner);
         Log.w("create list", "Members list has " + members.size());
@@ -278,8 +278,8 @@ public class ToDoActivity extends AppCompatActivity {
 
     private void getFilteredData(int position) {
 
-        Log.w("getFilkteredData", "Members list has " + members.size());
-        Log.w("getFilteredDatas", "Owners list has " + owners.size());
+        Log.w("getFilteredData", "Members list has " + members.size());
+        Log.w("getFilteredData", "Owners list has " + owners.size());
 
         Query queryRef = toDoRef.orderByChild("ownerId").equalTo(members.get(position).getId());
         queryRef.addValueEventListener(new ValueEventListener() {
@@ -350,7 +350,7 @@ public class ToDoActivity extends AppCompatActivity {
         priorityRadioGroup = dialogView.findViewById(R.id.task_priority);
 
         final Spinner ownersSpinner = dialogView.findViewById(R.id.todo_owner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, owners);
         ownersSpinner.setAdapter(adapter);
         ownersSpinner.setSelection(owners.size() - 1);
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -367,7 +367,6 @@ public class ToDoActivity extends AppCompatActivity {
 
             }
         });
-        //TODO: extract this part to reuse it between all activities.
         final Calendar myCalendar = Calendar.getInstance();
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {

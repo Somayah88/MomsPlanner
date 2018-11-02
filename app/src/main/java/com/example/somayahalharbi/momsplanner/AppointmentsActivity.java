@@ -207,7 +207,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         spinnerMembers.add("All");
 
 
-        ArrayAdapter<String> membersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerMembers);
+        ArrayAdapter<String> membersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerMembers);
         membersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // final Spinner memberSpinner=findViewById(R.id.appt_member_spinner);
         Log.w("create list", "Members list has " + members.size());
@@ -335,10 +335,9 @@ public class AppointmentsActivity extends AppCompatActivity {
 
 
         ownersSpinner = dialogView.findViewById(R.id.appt_owner);
-        ArrayAdapter<String> ownersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, owners);
+        ArrayAdapter<String> ownersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, owners);
         ownersSpinner.setAdapter(ownersAdapter);
         ownersSpinner.setSelection(owners.size() - 1);
-        //ToDo: spinner with rotation doesn't allow selection and pick the first member only
         ownersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -355,8 +354,6 @@ public class AppointmentsActivity extends AppCompatActivity {
         });
 
 
-
-        //TODO: extract this part to reuse it between all activities.
         //Date Picker Dialog
         final Calendar myCalendar = Calendar.getInstance();
 
@@ -410,14 +407,8 @@ public class AppointmentsActivity extends AppCompatActivity {
                 }
 
 
-               /*
-               String myFormat = "hh:mm a"; // your own format
-               SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-               String  formated_time = sdf.format(myCalendar.getTime());
-               apptTime.setText(formated_time);
-               */
-                apptTime.setText(hour_12_format + ":" + minutes + " " + AM_PM);
-                //TODO: make time format 00:00 and put string in string.xml
+                apptTime.setText(String.format(getResources().getString(R.string.appt_time), hour_12_format, minutes, AM_PM));
+
 
 
             }
@@ -477,7 +468,6 @@ public class AppointmentsActivity extends AppCompatActivity {
         dialog.show();
     }
     //TODO: display error messages as needed
-    //TODO: fix the UI and do data validations
 
     @Override
     public void onPause(){

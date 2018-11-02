@@ -17,7 +17,6 @@
     <string name="to_do_button">To Do</string>
     <string name="appointments_button">Appointments</string>
     <string name="important_contacts_button">Important Contacts</string>
-    <string name="workout_check">Did you do your workout today? </string>
 
 
     <string name="task_default">Task</string>
@@ -81,6 +80,7 @@
     <string name="prompt_appt_location"> Where? </string>
     <string name="prompt_appt_date">Date </string>
     <string name="prompt_appt_time">Time </string>
+    <string name="appt_time">%02d : %02d  %s </string>
 
     <!-- Strings for add contacts xml-->
     <string name="address_prompt">Address</string>

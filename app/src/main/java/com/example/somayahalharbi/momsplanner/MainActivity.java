@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -143,5 +142,5 @@ public class MainActivity extends AppCompatActivity {
 
 //TODO: Firebase jobDispatcher not working
 //TODO: save the app state when the device configuration changes
-//TODO: add app widget to display the to do items
 //TODO: unregister listeners.
+//TODO: sign the app
