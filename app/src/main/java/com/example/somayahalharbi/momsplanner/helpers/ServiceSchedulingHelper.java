@@ -58,7 +58,7 @@ public class ServiceSchedulingHelper {
         //---------------- Runs everyday at midnight---------------------
         Calendar now = new GregorianCalendar();
         Calendar midnight = new GregorianCalendar();
-        midnight.set(Calendar.HOUR_OF_DAY, 12);
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
         midnight.set(Calendar.MINUTE, 0);
         midnight.set(Calendar.SECOND, 0);
         midnight.set(Calendar.MILLISECOND, 0);
