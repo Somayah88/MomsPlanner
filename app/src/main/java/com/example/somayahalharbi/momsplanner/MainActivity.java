@@ -136,5 +136,4 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-//TODO: Firebase jobDispatcher not working
 //TODO: sign the app
