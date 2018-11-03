@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.somayahalharbi.momsplanner.FamilyActivity.MEMBER;
 
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAdapterViewHolder> {
     private ArrayList<Member> members = new ArrayList<>();
@@ -89,7 +88,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
 
         }
         Member member = members.get(position);
-        membersRef = database.getReference("users").child(user.getUid()).child(MEMBER).child(member.getId());
+        membersRef = database.getReference("users").child(user.getUid()).child("member").child(member.getId());
         membersRef.removeValue();
         notifyItemRemoved(position);
         notifyDataSetChanged();

@@ -61,8 +61,10 @@ public class OverdueTasksService extends JobService {
                             try {
                                 Date strDate = sdf.parse(toDo.getDueBy());
                                 if (strDate.getTime() < today.getTime())
-                                    toDoList.add(toDo);
+                                    if (!toDo.isChecked())
+                                        toDoList.add(toDo);
                             } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
 

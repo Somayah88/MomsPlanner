@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/spinner_filter_prompt"
-        android:paddingBottom="@dimen/margin_padding_small"
+        android:paddingBottom="@dimen/margin_padding_medium"
         android:paddingTop="@dimen/margin_padding_medium"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"

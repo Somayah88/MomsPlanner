@@ -25,13 +25,6 @@ import android.widget.Toast;
 import com.example.somayahalharbi.momsplanner.adapters.AppointmentsAdapter;
 import com.example.somayahalharbi.momsplanner.models.Appointment;
 import com.example.somayahalharbi.momsplanner.models.Member;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
-import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +43,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AppointmentsActivity extends AppCompatActivity {
+    //---------------DB keys-------------------------------
     public static final String APPOINTMENT_PATH = "appointment";
+    private static final String MEMBERS_NODE = "member";
+    private static final String USER_NODE = "users";
+    //----------------------------------------------
 
     private static FirebaseDatabase database;
     @BindView(R.id.fab)
@@ -103,7 +100,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         if (database == null) {
             database = FirebaseDatabase.getInstance();
         }
-        apptRef = database.getReference("users").child(user.getUid()).child(APPOINTMENT_PATH);
+        apptRef = database.getReference(USER_NODE).child(user.getUid()).child(APPOINTMENT_PATH);
 
 
         addAppointmentFab.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +265,7 @@ public class AppointmentsActivity extends AppCompatActivity {
 
 
     private void getMembers() {
-        ownersRef = database.getReference("users").child(user.getUid()).child("member");
+        ownersRef = database.getReference(USER_NODE).child(user.getUid()).child(MEMBERS_NODE);
 
 
         owners = new ArrayList<>();

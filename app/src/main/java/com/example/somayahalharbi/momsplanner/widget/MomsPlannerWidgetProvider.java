@@ -57,7 +57,6 @@ public class MomsPlannerWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         final String action = intent.getAction();
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
-            Log.w("Widget Provider", "Broadcast is recieved");
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName cn = new ComponentName(context, MomsPlannerWidgetProvider.class);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(cn), R.id.widget_list_view);

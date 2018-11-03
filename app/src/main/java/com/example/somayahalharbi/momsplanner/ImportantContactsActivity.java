@@ -43,6 +43,9 @@ public class ImportantContactsActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     private ContactsAdapter contactsAdapter;
     private ArrayList<Contacts> contactsList;
+    //----------------DB keys------------
+    private static final String CONTACTS_NODE = "contacts";
+    private static final String USER_NODE = "users";
     //------------save UI state-------------
     private static final String CONTACTS_LIST="contact_list";
 
@@ -83,7 +86,7 @@ public class ImportantContactsActivity extends AppCompatActivity {
             database = FirebaseDatabase.getInstance();
 
         }
-        contactsRef = database.getReference("users").child(user.getUid()).child("contacts");
+        contactsRef = database.getReference(USER_NODE).child(user.getUid()).child(CONTACTS_NODE);
         addContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

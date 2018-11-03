@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +39,8 @@ public class FamilyActivity extends AppCompatActivity {
     FloatingActionButton addMember;
     @BindView(R.id.family_member_recyclerView)
     RecyclerView familyMembersRecyclerView;
-    public static final String MEMBER = "member";
+    public static final String MEMBER_NODE = "member";
+    public static final String USERS_NODE = "users";
     private static FirebaseDatabase database;
     private DatabaseReference familyMemberRef;
     FirebaseUser user;
@@ -74,7 +74,7 @@ public class FamilyActivity extends AppCompatActivity {
             database = FirebaseDatabase.getInstance();
 
         }
-        familyMemberRef = database.getReference("users").child(user.getUid()).child("member");
+        familyMemberRef = database.getReference(USERS_NODE).child(user.getUid()).child(MEMBER_NODE);
         //#########################################################
         addMember.setOnClickListener(new View.OnClickListener() {
             @Override

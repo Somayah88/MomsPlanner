@@ -46,7 +46,6 @@ public class ToDoActivity extends AppCompatActivity {
     @BindView(R.id.to_do_fab)
     FloatingActionButton addToDo;
     //-------------- Dialog save state-----------------
-    public static final String TO_DO_NODE = "todo";
     private static final String DIALOG_STATUES="dialog_status";
     private static final String TASK_EDIT_TEXT="task_text";
     private static final String DUE_BY_TEXT="due_by_text";
@@ -55,6 +54,12 @@ public class ToDoActivity extends AppCompatActivity {
     private static final String TODO_LIST="to_do_list";
     private static final String MEMBERS_LIST="members_list";
     private static final String OWNERS_LIST="owners_list";
+    //----------------- DB keys------------
+    public static final String TO_DO_NODE = "todo";
+    private static final String MEMBERS_NODE = "member";
+    private static final String USER_NODE = "users";
+    //---------------------------------------
+
 
     private static FirebaseDatabase database;
     @BindView(R.id.to_do_recyclerView)
@@ -95,7 +100,7 @@ public class ToDoActivity extends AppCompatActivity {
         if (database == null) {
             database = FirebaseDatabase.getInstance();
         }
-        toDoRef = database.getReference("users").child(user.getUid()).child(TO_DO_NODE);
+        toDoRef = database.getReference(USER_NODE).child(user.getUid()).child(TO_DO_NODE);
 
 
         addToDo.setOnClickListener(new View.OnClickListener() {
@@ -132,13 +137,9 @@ public class ToDoActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(toDoRecyclerView);
         if(savedInstanceState!=null && savedInstanceState.containsKey(TODO_LIST))
         {
-            //if(savedInstanceState.containsKey(FILTER_SELECTION))
             filterSelection=savedInstanceState.getInt(FILTER_SELECTION);
-            /// if()
             toDoList=savedInstanceState.getParcelableArrayList(TODO_LIST);
-            //if(savedInstanceState.containsKey(MEMBERS_LIST))
             members=savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
-            // if(savedInstanceState.containsKey(OWNERS_LIST))
             owners=savedInstanceState.getStringArrayList(OWNERS_LIST);
             toDoAdapter.setData(toDoList);
             createFilterSpinner();
@@ -193,7 +194,7 @@ public class ToDoActivity extends AppCompatActivity {
 
     private void getMembers() {
 
-        ownersRef = database.getReference("users").child(user.getUid()).child("member");
+        ownersRef = database.getReference(USER_NODE).child(user.getUid()).child(MEMBERS_NODE);
 
 
         owners = new ArrayList<>();
