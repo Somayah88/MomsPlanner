@@ -4,11 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Member implements Parcelable {
-    private String name;
-    //private String relationship;
-    private String DOB;
-    private String id;
-
     public static final Parcelable.Creator<Member> CREATOR = new Parcelable.Creator<Member>() {
         @Override
         public Member createFromParcel(Parcel in) {
@@ -20,6 +15,10 @@ public class Member implements Parcelable {
             return new Member[size];
         }
     };
+    private String name;
+    //private String relationship;
+    private String DOB;
+    private String id;
 
     public Member() {
 

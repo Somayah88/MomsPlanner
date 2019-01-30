@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,25 +44,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ToDoActivity extends AppCompatActivity {
-    @BindView(R.id.to_do_fab)
-    FloatingActionButton addToDo;
-    //-------------- Dialog save state-----------------
-    private static final String DIALOG_STATUES="dialog_status";
-    private static final String TASK_EDIT_TEXT="task_text";
-    private static final String DUE_BY_TEXT="due_by_text";
-    //----------------- UI save state-----------
-    private static final String FILTER_SELECTION="filter_selection";
-    private static final String TODO_LIST="to_do_list";
-    private static final String MEMBERS_LIST="members_list";
-    private static final String OWNERS_LIST="owners_list";
     //----------------- DB keys------------
     public static final String TO_DO_NODE = "todo";
+    //-------------- Dialog save state-----------------
+    private static final String DIALOG_STATUES = "dialog_status";
+    private static final String TASK_EDIT_TEXT = "task_text";
+    private static final String DUE_BY_TEXT = "due_by_text";
+    //----------------- UI save state-----------
+    private static final String FILTER_SELECTION = "filter_selection";
+    private static final String TODO_LIST = "to_do_list";
+    private static final String MEMBERS_LIST = "members_list";
+    private static final String OWNERS_LIST = "owners_list";
     private static final String MEMBERS_NODE = "member";
     private static final String USER_NODE = "users";
-    //---------------------------------------
-
-
     private static FirebaseDatabase database;
+    //---------------------------------------
+    @BindView(R.id.to_do_fab)
+    FloatingActionButton addToDo;
     @BindView(R.id.to_do_recyclerView)
     RecyclerView toDoRecyclerView;
     @BindView(R.id.member_spinner)
@@ -70,24 +69,22 @@ public class ToDoActivity extends AppCompatActivity {
     DatabaseReference ownersRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
+    ArrayList<Member> members;
+    ArrayList<String> owners;
+    //-------- Dialog Content---------
+    EditText taskEditText;
+    Button addButton;
+    Button cancelButton;
+    EditText dueByEditText;
+    RadioGroup priorityRadioGroup;
     private ToDoAdapter toDoAdapter;
     // Firebase database
     private ArrayList<ToDo> toDoList = new ArrayList<>();
-    ArrayList<Member> members;
-    ArrayList<String> owners;
     private int mPosition;
     private ArrayList<String> spinnerMembers;
-    private int filterSelection=-1;
+    private int filterSelection = -1;
     private boolean dialogShown;
     private AlertDialog dialog;
-    //-------- Dialog Content---------
-     EditText taskEditText;
-     Button addButton;
-     Button cancelButton;
-     EditText dueByEditText;
-     RadioGroup priorityRadioGroup;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +111,6 @@ public class ToDoActivity extends AppCompatActivity {
         toDoRecyclerView.setLayoutManager(toDoLinearLayoutManager);
         toDoAdapter = new ToDoAdapter(this);
         toDoRecyclerView.setAdapter(toDoAdapter);
-
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
@@ -127,7 +123,7 @@ public class ToDoActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     toDoAdapter.remove(position);
-                   WidgetUpdateHelper.updateWidgetData(ToDoActivity.this);
+                    WidgetUpdateHelper.updateWidgetData(ToDoActivity.this);
 
                 }
 
@@ -135,17 +131,15 @@ public class ToDoActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(toDoRecyclerView);
-        if(savedInstanceState!=null && savedInstanceState.containsKey(TODO_LIST))
-        {
-            filterSelection=savedInstanceState.getInt(FILTER_SELECTION);
-            toDoList=savedInstanceState.getParcelableArrayList(TODO_LIST);
-            members=savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
-            owners=savedInstanceState.getStringArrayList(OWNERS_LIST);
+        if (savedInstanceState != null && savedInstanceState.containsKey(TODO_LIST)) {
+            filterSelection = savedInstanceState.getInt(FILTER_SELECTION);
+            toDoList = savedInstanceState.getParcelableArrayList(TODO_LIST);
+            members = savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
+            owners = savedInstanceState.getStringArrayList(OWNERS_LIST);
             toDoAdapter.setData(toDoList);
             createFilterSpinner();
 
-        }
-        else {
+        } else {
 
             getMembers();
             getAllData();
@@ -158,18 +152,18 @@ public class ToDoActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //------------ Save UI state------------------------------
-        outState.putInt(FILTER_SELECTION,memberSpinner.getSelectedItemPosition());
+        outState.putInt(FILTER_SELECTION, memberSpinner.getSelectedItemPosition());
         outState.putParcelableArrayList(TODO_LIST, toDoList);
-        outState.putParcelableArrayList(MEMBERS_LIST,members);
+        outState.putParcelableArrayList(MEMBERS_LIST, members);
         outState.putStringArrayList(OWNERS_LIST, owners);
 
         //-------------Save Dialog State------------------------
         outState.putBoolean(DIALOG_STATUES, dialogShown);
-        if(dialogShown){
-            if(!taskEditText.getText().toString().isEmpty())
-            outState.putString(TASK_EDIT_TEXT, taskEditText.getText().toString());
-            if(!dueByEditText.getText().toString().isEmpty())
-            outState.putString(DUE_BY_TEXT, dueByEditText.getText().toString());
+        if (dialogShown) {
+            if (!taskEditText.getText().toString().isEmpty())
+                outState.putString(TASK_EDIT_TEXT, taskEditText.getText().toString());
+            if (!dueByEditText.getText().toString().isEmpty())
+                outState.putString(DUE_BY_TEXT, dueByEditText.getText().toString());
 
         }
     }
@@ -177,14 +171,14 @@ public class ToDoActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState.getBoolean(DIALOG_STATUES)){
+        if (savedInstanceState.getBoolean(DIALOG_STATUES)) {
             addTask();
-           if(savedInstanceState.containsKey(TASK_EDIT_TEXT)){
-                String taskText=savedInstanceState.getString(TASK_EDIT_TEXT);
+            if (savedInstanceState.containsKey(TASK_EDIT_TEXT)) {
+                String taskText = savedInstanceState.getString(TASK_EDIT_TEXT);
                 taskEditText.setText(taskText);
             }
-            if(savedInstanceState.containsKey(DUE_BY_TEXT)){
-                String dueByText=savedInstanceState.getString(DUE_BY_TEXT);
+            if (savedInstanceState.containsKey(DUE_BY_TEXT)) {
+                String dueByText = savedInstanceState.getString(DUE_BY_TEXT);
 
                 dueByEditText.setText(dueByText);
             }
@@ -221,8 +215,6 @@ public class ToDoActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
 
 
-
-
             }
         });
     }
@@ -237,7 +229,7 @@ public class ToDoActivity extends AppCompatActivity {
         ArrayAdapter<String> membersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerMembers);
         membersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         memberSpinner.setAdapter(membersAdapter);
-        if(filterSelection==-1)
+        if (filterSelection == -1)
             memberSpinner.setSelection(spinnerMembers.size() - 1);
         else
             memberSpinner.setSelection(filterSelection);
@@ -329,11 +321,9 @@ public class ToDoActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
 
 
-
             }
         });
     }
-
 
 
     private void addTask() {
@@ -343,7 +333,7 @@ public class ToDoActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
         taskEditText = dialogView.findViewById(R.id.task);
         addButton = dialogView.findViewById(R.id.add_to_do);
-        cancelButton= dialogView.findViewById(R.id.cancel_btn);
+        cancelButton = dialogView.findViewById(R.id.cancel_btn);
         dueByEditText = dialogView.findViewById(R.id.to_do_due_by);
         priorityRadioGroup = dialogView.findViewById(R.id.task_priority);
 
@@ -447,11 +437,29 @@ public class ToDoActivity extends AppCompatActivity {
         dialog.show();
     }
 
-   @Override
-    public void onPause(){
-       super.onPause();
-       dialogShown = dialog != null && dialog.isShowing();
+    @Override
+    public void onPause() {
+        super.onPause();
+        dialogShown = dialog != null && dialog.isShowing();
 
-   }
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

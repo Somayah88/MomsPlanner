@@ -10,7 +10,6 @@ public class WidgetUpdateHelper {
 
     public static void updateWidgetData(final Context context) {
         Activity activity=(Activity)context;
-        Log.w("to do activity", "update widget data is just called");
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

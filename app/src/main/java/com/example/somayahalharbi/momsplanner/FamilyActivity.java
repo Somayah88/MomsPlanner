@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -35,32 +36,30 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FamilyActivity extends AppCompatActivity {
+    public static final String MEMBER_NODE = "member";
+    public static final String USERS_NODE = "users";
+    //---------- Save Dialog State-------------
+    private static final String DIALOG_STATUES = "dialog_status";
+    private static final String NAME_EDIT_TEXT = "name_text";
+    private static final String BIRTHDAY_TEXT = "birthday_text";
+    //--------------- Save UI state-------------------------
+    private static final String MEMBERS_LIST = "members_list";
+    private static FirebaseDatabase database;
     @BindView(R.id.add_member_fab)
     FloatingActionButton addMember;
     @BindView(R.id.family_member_recyclerView)
     RecyclerView familyMembersRecyclerView;
-    public static final String MEMBER_NODE = "member";
-    public static final String USERS_NODE = "users";
-    private static FirebaseDatabase database;
-    private DatabaseReference familyMemberRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
+    EditText name;
+    EditText birthday;
+    Button addButton;
+    Button cancelButton;
+    private DatabaseReference familyMemberRef;
     private MembersAdapter familyMembersAdapter;
     private ArrayList<Member> membersList;
     private AlertDialog dialog;
     private boolean dialogShown;
-    //---------- Save Dialog State-------------
-    private static final String DIALOG_STATUES="dialog_status";
-    private static final String NAME_EDIT_TEXT="name_text";
-    private static final String BIRTHDAY_TEXT="birthday_text";
-    //--------------- Save UI state-------------------------
-    private static final String MEMBERS_LIST="members_list";
-
-     EditText name;
-     EditText birthday;
-     Button addButton;
-     Button cancelButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,12 +109,10 @@ public class FamilyActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(familyMembersRecyclerView);
 
-        if(savedInstanceState!=null && savedInstanceState.containsKey(MEMBERS_LIST))
-        {
-            membersList=savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
+        if (savedInstanceState != null && savedInstanceState.containsKey(MEMBERS_LIST)) {
+            membersList = savedInstanceState.getParcelableArrayList(MEMBERS_LIST);
             familyMembersAdapter.setData(membersList);
-        }
-        else
+        } else
             getMembers();
 
 
@@ -124,34 +121,34 @@ public class FamilyActivity extends AppCompatActivity {
     private void getMembers() {
         familyMemberRef.addValueEventListener(new ValueEventListener() {
             @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            membersList = new ArrayList<>();
-            for (DataSnapshot memberSnapshot : dataSnapshot.getChildren()) {
-                Member member = memberSnapshot.getValue(Member.class);
-                membersList.add(member);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                membersList = new ArrayList<>();
+                for (DataSnapshot memberSnapshot : dataSnapshot.getChildren()) {
+                    Member member = memberSnapshot.getValue(Member.class);
+                    membersList.add(member);
+                }
+                familyMembersAdapter.setData(membersList);
+
             }
-            familyMembersAdapter.setData(membersList);
 
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_loading_data), Toast.LENGTH_SHORT).show();
-        }
-    });
-
-}
+    }
 
 
-    private void addMembers(){
-        final AlertDialog.Builder dialogBuilder=new AlertDialog.Builder(this);
+    private void addMembers() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_member, null);
         dialogBuilder.setView(dialogView);
-       name = dialogView.findViewById(R.id.member_name);
-       addButton  = dialogView.findViewById(R.id.add_member_button);
-       cancelButton = dialogView.findViewById(R.id.cancel_member_button);
-       birthday = dialogView.findViewById(R.id.member_dob);
+        name = dialogView.findViewById(R.id.member_name);
+        addButton = dialogView.findViewById(R.id.add_member_button);
+        cancelButton = dialogView.findViewById(R.id.cancel_member_button);
+        birthday = dialogView.findViewById(R.id.member_dob);
 
         final Calendar myCalendar = Calendar.getInstance();
 
@@ -181,7 +178,6 @@ public class FamilyActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
-
 
 
         dialog = dialogBuilder.create();
@@ -215,20 +211,21 @@ public class FamilyActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         dialogShown = dialog != null && dialog.isShowing();
 
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(MEMBERS_LIST,membersList);
+        outState.putParcelableArrayList(MEMBERS_LIST, membersList);
         outState.putBoolean(DIALOG_STATUES, dialogShown);
-        if(dialogShown){
-            if(!name.getText().toString().isEmpty())
+        if (dialogShown) {
+            if (!name.getText().toString().isEmpty())
                 outState.putString(NAME_EDIT_TEXT, name.getText().toString());
-            if(!birthday.getText().toString().isEmpty())
+            if (!birthday.getText().toString().isEmpty())
                 outState.putString(BIRTHDAY_TEXT, birthday.getText().toString());
 
         }
@@ -237,18 +234,36 @@ public class FamilyActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState.getBoolean(DIALOG_STATUES)){
+        if (savedInstanceState.getBoolean(DIALOG_STATUES)) {
             addMembers();
-            if(savedInstanceState.containsKey(NAME_EDIT_TEXT)){
-                String nameText=savedInstanceState.getString(NAME_EDIT_TEXT);
+            if (savedInstanceState.containsKey(NAME_EDIT_TEXT)) {
+                String nameText = savedInstanceState.getString(NAME_EDIT_TEXT);
                 name.setText(nameText);
             }
-            if(savedInstanceState.containsKey(BIRTHDAY_TEXT)){
-                String dobText=savedInstanceState.getString(BIRTHDAY_TEXT);
+            if (savedInstanceState.containsKey(BIRTHDAY_TEXT)) {
+                String dobText = savedInstanceState.getString(BIRTHDAY_TEXT);
                 birthday.setText(dobText);
             }
 
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

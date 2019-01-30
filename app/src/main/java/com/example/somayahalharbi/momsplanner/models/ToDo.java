@@ -4,16 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ToDo implements Parcelable {
-    private String toDo;
-    private String owner;
-    private int priority; // should be 1, 2, 3: 3 is highest
-    private boolean checked;
-    private String dueBy;
-    private String ownerId;
-
-
-    private String taskId;
-
     public static final Parcelable.Creator<ToDo> CREATOR = new Parcelable.Creator<ToDo>() {
 
         @Override
@@ -26,6 +16,13 @@ public class ToDo implements Parcelable {
             return new ToDo[size];
         }
     };
+    private String toDo;
+    private String owner;
+    private int priority; // should be 1, 2, 3: 3 is highest
+    private boolean checked;
+    private String dueBy;
+    private String ownerId;
+    private String taskId;
 
     public ToDo() {
 

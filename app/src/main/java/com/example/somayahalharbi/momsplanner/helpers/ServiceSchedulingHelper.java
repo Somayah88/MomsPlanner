@@ -17,7 +17,7 @@ import java.util.GregorianCalendar;
 
 public class ServiceSchedulingHelper {
 
-    public static void scheduleAppointmentReminderService(Context context){
+    public static void scheduleAppointmentReminderService(Context context) {
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
 //----------- Runs everyday to noon-------------
@@ -52,7 +52,8 @@ public class ServiceSchedulingHelper {
 
 
     }
-    public static void scheduleOverdueTaskNotificationService(Context context){
+
+    public static void scheduleOverdueTaskNotificationService(Context context) {
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
         //---------------- Runs everyday at midnight---------------------
@@ -80,7 +81,6 @@ public class ServiceSchedulingHelper {
 
 
         dispatcher.mustSchedule(overdueTaskJob);
-
 
 
     }

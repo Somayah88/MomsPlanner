@@ -22,8 +22,6 @@ import static com.example.somayahalharbi.momsplanner.helpers.ServiceSchedulingHe
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth.AuthStateListener authListener;
-    private FirebaseAuth mFirebaseauth;
     @BindView(R.id.to_do_btn)
     Button toDoButton;
     @BindView(R.id.appointment_btn)
@@ -34,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Button familyMembersButton;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,51 +43,58 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        final Context context=this;
+        final Context context = this;
 
-        mFirebaseauth=FirebaseAuth.getInstance();
-        final FirebaseUser user =mFirebaseauth.getCurrentUser();
-        authListener=new FirebaseAuth.AuthStateListener(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        authListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user=firebaseAuth.getCurrentUser();
-                if(user==null){
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                 }
 
             }
         };
-        contactsButton.setOnClickListener(new View.OnClickListener(){
+        contactsButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 Intent contactsIntent = new Intent(context, ImportantContactsActivity.class);
                 startActivity(contactsIntent);
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
         familyMembersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent familyMembersIntent=new Intent(context, FamilyActivity.class);
+                Intent familyMembersIntent = new Intent(context, FamilyActivity.class);
                 startActivity(familyMembersIntent);
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+
 
             }
         });
         toDoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toDoIntent=new Intent(context,ToDoActivity.class);
+                Intent toDoIntent = new Intent(context, ToDoActivity.class);
                 startActivity(toDoIntent);
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+
 
             }
         });
         appointmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent appointmentsIntent=new Intent(context,AppointmentsActivity.class);
+                Intent appointmentsIntent = new Intent(context, AppointmentsActivity.class);
                 startActivity(appointmentsIntent);
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+
 
             }
         });
@@ -120,20 +126,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mFirebaseauth.addAuthStateListener(authListener);
+        firebaseAuth.addAuthStateListener(authListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (authListener != null) {
-            mFirebaseauth.removeAuthStateListener(authListener);
+            firebaseAuth.removeAuthStateListener(authListener);
         }
     }
+
     public void signOut() {
-        mFirebaseauth.signOut();
+        firebaseAuth.signOut();
     }
 
 }
 
-//TODO: sign the app

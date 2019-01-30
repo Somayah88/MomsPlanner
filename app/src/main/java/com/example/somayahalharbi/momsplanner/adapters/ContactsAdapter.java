@@ -21,9 +21,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsAdapterViewHolder> {
-    private ArrayList<Contacts> contacts = new ArrayList<>();
     private static FirebaseDatabase database;
-
+    private ArrayList<Contacts> contacts = new ArrayList<>();
 
     @NonNull
     @Override
@@ -83,23 +82,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         notifyItemRangeChanged(0, size);
     }
 
-    public class ContactsAdapterViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.title)
-        TextView contactTitle;
-        @BindView(R.id.contact_address)
-        TextView address;
-        @BindView(R.id.email)
-        TextView contactEmail;
-        @BindView(R.id.phone_no)
-        TextView contactPhoneNo;
-
-
-        public ContactsAdapterViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
     public void removeContact(int position) {
         DatabaseReference contactsRef;
         FirebaseUser user;
@@ -115,6 +97,23 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         contactsRef.removeValue();
         notifyItemRemoved(position);
         notifyDataSetChanged();
+    }
+
+    public class ContactsAdapterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.title)
+        TextView contactTitle;
+        @BindView(R.id.contact_address)
+        TextView address;
+        @BindView(R.id.email)
+        TextView contactEmail;
+        @BindView(R.id.phone_no)
+        TextView contactPhoneNo;
+
+
+        public ContactsAdapterViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 
 

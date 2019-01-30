@@ -4,19 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Contacts implements Parcelable {
-    private String title;
-    private String streetAddress;
-    private String unit;
-    private String city;
-    private String state;
-    private String zipCode;
-    private String phone;
-    private String emailAddress;
-
-
-    private String id;
-
-
     public static final Parcelable.Creator<Contacts> CREATOR
             = new Parcelable.Creator<Contacts>() {
         public Contacts createFromParcel(Parcel in) {
@@ -27,6 +14,15 @@ public class Contacts implements Parcelable {
             return new Contacts[size];
         }
     };
+    private String title;
+    private String streetAddress;
+    private String unit;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String phone;
+    private String emailAddress;
+    private String id;
 
     public Contacts() {
 

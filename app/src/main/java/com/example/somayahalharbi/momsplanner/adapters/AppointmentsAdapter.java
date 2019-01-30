@@ -23,10 +23,8 @@ import butterknife.ButterKnife;
 import static com.example.somayahalharbi.momsplanner.AppointmentsActivity.APPOINTMENT_PATH;
 
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentsAdapterViewHolder> {
-    private ArrayList<Appointment> appointments = new ArrayList<>();
     private static FirebaseDatabase database;
-
-
+    private ArrayList<Appointment> appointments = new ArrayList<>();
 
     @NonNull
     @Override

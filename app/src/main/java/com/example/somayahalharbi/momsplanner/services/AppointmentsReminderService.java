@@ -26,14 +26,12 @@ import static com.example.somayahalharbi.momsplanner.AppointmentsActivity.APPOIN
 
 
 public class AppointmentsReminderService extends JobService {
+    private static final int NOTI_APPOINTMENT = 110;
     private static FirebaseDatabase database;
     DatabaseReference apptRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
     private ArrayList<Appointment> appointmentList;
-    private static final int NOTI_APPOINTMENT = 110;
-
-
 
     @Override
     public boolean onStartJob(JobParameters job) {
@@ -71,18 +69,15 @@ public class AppointmentsReminderService extends JobService {
 
 
                 }
-                Log.d("AppointmentService", "Number of upcoming appointments "+ appointmentList.size()+" ");
-                if(appointmentList.size()>0)
-                {
-                    NotificationsHelper notifications=new NotificationsHelper(getApplicationContext());
-                    notifications.notify(NOTI_APPOINTMENT,notifications.getAppointmentNotifications(appointmentList.size()));
+                if (appointmentList.size() > 0) {
+                    NotificationsHelper notifications = new NotificationsHelper(getApplicationContext());
+                    notifications.notify(NOTI_APPOINTMENT, notifications.getAppointmentNotifications(appointmentList.size()));
                 }
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("AppointmentReminder", "loadAppointments:onCancelled", databaseError.toException());
 
 
             }

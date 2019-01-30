@@ -1,4 +1,5 @@
 package com.example.somayahalharbi.momsplanner;
+
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
 
 
 import butterknife.BindView;
@@ -43,15 +43,12 @@ public class SignupActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
-        mFirebaseAuth=FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         mPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -70,8 +67,8 @@ public class SignupActivity extends AppCompatActivity {
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email=mEmail.getText().toString().trim();
-                String password=mPassword.getText().toString().trim();
+                String email = mEmail.getText().toString().trim();
+                String password = mPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.empty_email_error), Toast.LENGTH_SHORT).show();
@@ -89,16 +86,14 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 signu_progress.setVisibility(View.VISIBLE);
-                mFirebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         signu_progress.setVisibility(View.GONE);
-                        if(!task.isSuccessful())
-                        {
+                        if (!task.isSuccessful()) {
                             Toast.makeText(SignupActivity.this, getResources().getString(R.string.sign_up_error) + task.getException(),
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
                         }
@@ -108,6 +103,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();

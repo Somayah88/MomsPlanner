@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_padding_large"
             android:gravity="center"
-            android:textColor="@color/secondaryTitleColor"
+            android:textColor="@color/textColor"
             tools:text="@string/member_dob_default" />
 
 

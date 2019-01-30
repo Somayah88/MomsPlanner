@@ -38,7 +38,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
     private FirebaseAuth mFirebaseAuth;
 
 
-
     public ToDoAdapter(Context context) {
         mContext = context;
     }
@@ -56,7 +55,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoAdapterVie
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ToDoAdapterViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final ToDoAdapterViewHolder viewHolder, final int position) {
 
         viewHolder.toDoTask.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

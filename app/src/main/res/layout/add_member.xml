@@ -31,8 +31,9 @@
         android:clickable="true"
         android:maxLines="1"
         android:id="@+id/member_dob"
-        android:focusable="false"
+        android:focusable="true"
         android:inputType="none"
+        android:focusableInTouchMode="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/member_name" />

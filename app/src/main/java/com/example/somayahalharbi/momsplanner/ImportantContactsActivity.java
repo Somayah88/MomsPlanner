@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,46 +34,45 @@ import butterknife.ButterKnife;
 
 public class ImportantContactsActivity extends AppCompatActivity {
 
+    //----------------DB keys------------
+    private static final String CONTACTS_NODE = "contacts";
+    private static final String USER_NODE = "users";
+    //------------save UI state-------------
+    private static final String CONTACTS_LIST = "contact_list";
+    //------------- Save Dialog state------------
+    private static final String TITLE_TEXT = "title_text";
+    private static final String ADDRESS_TEXT = "address_text";
+    private static final String CITY_TEXT = "city_text";
+    private static final String STATE_TEXT = "state_text";
+    private static final String UNIT_TEXT = "unit_text";
+    private static final String ZIPCODE_TEXT = "zip_text";
+    private static final String PHONE_TEXT = "phone_text";
+    private static final String EMAIL_TEXT = "email_text";
+    private static final String DIALOG_STATUS = "dialog_status";
     private static FirebaseDatabase database;
     @BindView(R.id.fab)
     FloatingActionButton addContact;
     @BindView(R.id.contacts_recyclerView)
     RecyclerView contactsRecyclerView;
-    private DatabaseReference contactsRef;
     FirebaseUser user;
     FirebaseAuth mFirebaseAuth;
+    //------------ Dialog Views-----------
+    AlertDialog dialog;
+    Button addButton;
+    Button cancelButton;
+    EditText title;
+    EditText address;
+    EditText city;
+    EditText state;
+    EditText unit;
+    EditText zipCode;
+    EditText phone;
+    EditText email;
+    private DatabaseReference contactsRef;
     private ContactsAdapter contactsAdapter;
     private ArrayList<Contacts> contactsList;
-    //----------------DB keys------------
-    private static final String CONTACTS_NODE = "contacts";
-    private static final String USER_NODE = "users";
-    //------------save UI state-------------
-    private static final String CONTACTS_LIST="contact_list";
-
-    //------------- Save Dialog state------------
-    private static final String TITLE_TEXT="title_text";
-    private static final String ADDRESS_TEXT="address_text";
-    private static final String CITY_TEXT="city_text";
-    private static final String STATE_TEXT="state_text";
-    private static final String UNIT_TEXT="unit_text";
-    private static final String ZIPCODE_TEXT="zip_text";
-    private static final String PHONE_TEXT="phone_text";
-    private static final String EMAIL_TEXT="email_text";
-    private static final String DIALOG_STATUS="dialog_status";
     private boolean dialogShown;
-    //------------ Dialog Views-----------
-     AlertDialog dialog;
-     Button addButton ;
-     Button cancelButton ;
-     EditText title ;
-    EditText address ;
-    EditText city ;
-     EditText state ;
-    EditText unit ;
-     EditText zipCode ;
-     EditText phone ;
-     EditText email;
-     //------------------------------------------
+    //------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,19 +121,17 @@ public class ImportantContactsActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(contactsRecyclerView);
 
-        if(savedInstanceState!=null && savedInstanceState.containsKey(CONTACTS_LIST))
-        {
-            contactsList=savedInstanceState.getParcelableArrayList(CONTACTS_LIST);
+        if (savedInstanceState != null && savedInstanceState.containsKey(CONTACTS_LIST)) {
+            contactsList = savedInstanceState.getParcelableArrayList(CONTACTS_LIST);
             contactsAdapter.setData(contactsList);
 
-        }
-        else
+        } else
             getContacts();
 
     }
 
 
-    private void getContacts(){
+    private void getContacts() {
 
         ValueEventListener contactsListener = new ValueEventListener() {
             @Override
@@ -163,16 +161,16 @@ public class ImportantContactsActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.add_contact, null);
         dialogBuilder.setView(dialogView);
         addButton = dialogView.findViewById(R.id.add_contact);
-       cancelButton = dialogView.findViewById(R.id.cancel_btn);
-         title = dialogView.findViewById(R.id.contact_title);
-         address = dialogView.findViewById(R.id.address1);
-         city = dialogView.findViewById(R.id.city);
-         state = dialogView.findViewById(R.id.state);
-         unit = dialogView.findViewById(R.id.unit);
-       zipCode = dialogView.findViewById(R.id.zip_code);
-         phone = dialogView.findViewById(R.id.phone);
-         email = dialogView.findViewById(R.id.email);
-       dialog = dialogBuilder.create();
+        cancelButton = dialogView.findViewById(R.id.cancel_btn);
+        title = dialogView.findViewById(R.id.contact_title);
+        address = dialogView.findViewById(R.id.address1);
+        city = dialogView.findViewById(R.id.city);
+        state = dialogView.findViewById(R.id.state);
+        unit = dialogView.findViewById(R.id.unit);
+        zipCode = dialogView.findViewById(R.id.zip_code);
+        phone = dialogView.findViewById(R.id.phone);
+        email = dialogView.findViewById(R.id.email);
+        dialog = dialogBuilder.create();
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,40 +213,41 @@ public class ImportantContactsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         dialogShown = dialog != null && dialog.isShowing();
 
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (contactsList != null)
             outState.putParcelableArrayList(CONTACTS_LIST, contactsList);
         outState.putBoolean(DIALOG_STATUS, dialogShown);
-        if(dialogShown){
+        if (dialogShown) {
             //Save the dialog views state
-            if(!title.getText().toString().isEmpty())
-                outState.putString(TITLE_TEXT,title.getText().toString());
-            if(!address.getText().toString().isEmpty())
+            if (!title.getText().toString().isEmpty())
+                outState.putString(TITLE_TEXT, title.getText().toString());
+            if (!address.getText().toString().isEmpty())
                 outState.putString(ADDRESS_TEXT, address.getText().toString());
-            if(!city.getText().toString().isEmpty())
-                outState.putString(CITY_TEXT,city.getText().toString());
+            if (!city.getText().toString().isEmpty())
+                outState.putString(CITY_TEXT, city.getText().toString());
 
-            if(!state.getText().toString().isEmpty())
-                outState.putString(STATE_TEXT,state.getText().toString());
+            if (!state.getText().toString().isEmpty())
+                outState.putString(STATE_TEXT, state.getText().toString());
 
-            if(!unit.getText().toString().isEmpty())
-                outState.putString(UNIT_TEXT,unit.getText().toString());
+            if (!unit.getText().toString().isEmpty())
+                outState.putString(UNIT_TEXT, unit.getText().toString());
 
-            if(!zipCode.getText().toString().isEmpty())
-                outState.putString(ZIPCODE_TEXT,zipCode.getText().toString());
+            if (!zipCode.getText().toString().isEmpty())
+                outState.putString(ZIPCODE_TEXT, zipCode.getText().toString());
 
-            if(!phone.getText().toString().isEmpty())
-                outState.putString(PHONE_TEXT,phone.getText().toString());
+            if (!phone.getText().toString().isEmpty())
+                outState.putString(PHONE_TEXT, phone.getText().toString());
 
-            if(!email.getText().toString().isEmpty())
-                outState.putString(EMAIL_TEXT,email.getText().toString());
+            if (!email.getText().toString().isEmpty())
+                outState.putString(EMAIL_TEXT, email.getText().toString());
 
 
         }
@@ -258,47 +257,66 @@ public class ImportantContactsActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState.getBoolean(DIALOG_STATUS)){
+        if (savedInstanceState.getBoolean(DIALOG_STATUS)) {
             addContacts();
-            if(savedInstanceState.containsKey(TITLE_TEXT)){
-                String titleText=savedInstanceState.getString(TITLE_TEXT);
+            if (savedInstanceState.containsKey(TITLE_TEXT)) {
+                String titleText = savedInstanceState.getString(TITLE_TEXT);
                 title.setText(titleText);
             }
-            if(savedInstanceState.containsKey(ADDRESS_TEXT)){
-                String addressText=savedInstanceState.getString(ADDRESS_TEXT);
-               address.setText(addressText);
+            if (savedInstanceState.containsKey(ADDRESS_TEXT)) {
+                String addressText = savedInstanceState.getString(ADDRESS_TEXT);
+                address.setText(addressText);
             }
-            if(savedInstanceState.containsKey(CITY_TEXT)){
-                String cityText=savedInstanceState.getString(CITY_TEXT);
+            if (savedInstanceState.containsKey(CITY_TEXT)) {
+                String cityText = savedInstanceState.getString(CITY_TEXT);
                 city.setText(cityText);
 
             }
-            if(savedInstanceState.containsKey(UNIT_TEXT)){
-                String unitText=savedInstanceState.getString(UNIT_TEXT);
+            if (savedInstanceState.containsKey(UNIT_TEXT)) {
+                String unitText = savedInstanceState.getString(UNIT_TEXT);
                 unit.setText(unitText);
 
             }
-            if(savedInstanceState.containsKey(STATE_TEXT)){
+            if (savedInstanceState.containsKey(STATE_TEXT)) {
 
-                String stateText=savedInstanceState.getString(STATE_TEXT);
+                String stateText = savedInstanceState.getString(STATE_TEXT);
                 state.setText(stateText);
             }
-            if(savedInstanceState.containsKey(ZIPCODE_TEXT)){
-                String zipCodeText=savedInstanceState.getString(ZIPCODE_TEXT);
+            if (savedInstanceState.containsKey(ZIPCODE_TEXT)) {
+                String zipCodeText = savedInstanceState.getString(ZIPCODE_TEXT);
                 zipCode.setText(zipCodeText);
 
             }
-            if(savedInstanceState.containsKey(PHONE_TEXT)){
-                String phoneText=savedInstanceState.getString(PHONE_TEXT);
+            if (savedInstanceState.containsKey(PHONE_TEXT)) {
+                String phoneText = savedInstanceState.getString(PHONE_TEXT);
                 phone.setText(phoneText);
 
             }
-            if(savedInstanceState.containsKey(EMAIL_TEXT)){
-                String emailText=savedInstanceState.getString(EMAIL_TEXT);
+            if (savedInstanceState.containsKey(EMAIL_TEXT)) {
+                String emailText = savedInstanceState.getString(EMAIL_TEXT);
                 email.setText(emailText);
 
             }
 
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

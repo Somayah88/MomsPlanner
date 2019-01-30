@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,7 +49,16 @@ public class AppointmentsActivity extends AppCompatActivity {
     private static final String MEMBERS_NODE = "member";
     private static final String USER_NODE = "users";
     //----------------------------------------------
-
+    private static final String DIALOG_STATUES = "dialog_status";
+    //---------------- UI save state-----------------
+    private static final String FILTER_SELECTION = "filter_selection";
+    private static final String APPOINTMENT_TITLE_TEXT = "appointment_text";
+    private static final String LOCATION_TEXT = "location_text";
+    private static final String APPT_DATE_TEX = "appt_date_text";
+    private static final String APPT_TIME_TEXT = "appt_time_text";
+    private static final String APPOINTMENTS_LIST = "appt_list";
+    private static final String MEMBERS_LIST = "members_list";
+    private static final String OWNERS_LIST = "owners_list";
     private static FirebaseDatabase database;
     @BindView(R.id.fab)
     FloatingActionButton addAppointmentFab;
@@ -66,18 +76,8 @@ public class AppointmentsActivity extends AppCompatActivity {
     private ArrayList<Appointment> appointmentList;
     private int mPosition;
     private ArrayList<String> spinnerMembers;
-    private static final String DIALOG_STATUES = "dialog_status";
-    //---------------- UI save state-----------------
-    private static final String FILTER_SELECTION = "filter_selection";
-    private static final String APPOINTMENT_TITLE_TEXT = "appointment_text";
-    private static final String LOCATION_TEXT = "location_text";
-    private static final String APPT_DATE_TEX = "appt_date_text";
-    private static final String APPT_TIME_TEXT = "appt_time_text";
-    private static final String APPOINTMENTS_LIST = "appt_list";
     //------------------ Dialog save state-----------
     private boolean dialogShown;
-    private static final String MEMBERS_LIST = "members_list";
-    private static final String OWNERS_LIST = "owners_list";
     private int filterSelection = -1;
     //-------------- Dialog Views -----------
     private AlertDialog dialog;
@@ -509,5 +509,23 @@ public class AppointmentsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

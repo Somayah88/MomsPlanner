@@ -22,10 +22,8 @@ import butterknife.ButterKnife;
 
 
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAdapterViewHolder> {
-    private ArrayList<Member> members = new ArrayList<>();
     private static FirebaseDatabase database;
-
-
+    private ArrayList<Member> members = new ArrayList<>();
 
     @NonNull
     @Override
@@ -41,7 +39,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
     public void onBindViewHolder(@NonNull MemberAdapterViewHolder viewHolder, int position) {
         String name = members.get(position).getName();
         String dob = members.get(position).getDOB();
-        viewHolder.memeberName.setText(name);
+        viewHolder.memberName.setText(name);
         viewHolder.memberDOB.setText(dob);
 
     }
@@ -63,20 +61,6 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
         notifyDataSetChanged();
     }
 
-    public class MemberAdapterViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.member_name)
-        TextView memeberName;
-        @BindView(R.id.member_dob)
-        TextView memberDOB;
-
-
-        public MemberAdapterViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-
-        }
-    }
-
     public void removeMember(int position) {
         DatabaseReference membersRef;
         FirebaseUser user;
@@ -92,6 +76,20 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MemberAd
         membersRef.removeValue();
         notifyItemRemoved(position);
         notifyDataSetChanged();
+    }
+
+    public class MemberAdapterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.member_name)
+        TextView memberName;
+        @BindView(R.id.member_dob)
+        TextView memberDOB;
+
+
+        public MemberAdapterViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+        }
     }
 
 }
